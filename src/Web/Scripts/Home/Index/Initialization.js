@@ -1,0 +1,5 @@
+﻿
+$(function () {
+    initializeMap();
+    setEvents();
+});

@@ -1,0 +1,29 @@
+﻿#map {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 25%;
+    bottom: 0;
+    background: #eee;
+}
+
+#panel {
+    position: absolute;
+    top: 0;
+    left: 75%;
+    right: 0;
+    bottom: 0;
+    background: #eee;
+    overflow: auto;
+}
+
+#formId label {
+    position: absolute;
+    width: 25%;
+}
+
+#formId input {
+    position: absolute;
+    left: 25%;
+    width: 65%;
+}
