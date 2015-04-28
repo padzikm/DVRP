@@ -28,12 +28,13 @@
             geocoder = new google.maps.Geocoder();
 
             google.maps.event.addListener(map, 'click', function (e) {
-                reverseGeocoding(e.latLng, createOrderMarker);
+                var firstId = $("#orders").children().first().attr("id");
+                reverseGeocoding(e.latLng, addOrderHandler, { Id: firstId });
             });
 
             google.maps.event.addListener(map, 'rightclick', function (e) {
                 removeDepotMarker();
-                reverseGeocoding(e.latLng, createDepotMarker);
+                reverseGeocoding(e.latLng, createDepot);
             });
         }
 
@@ -51,7 +52,8 @@
             });
 
             google.maps.event.addListener(marker, 'click', function (e) {
-                infowindow.open(map, marker);
+                var id = "#name_" + marker.orderId;
+                $(id).focus();
             });
             google.maps.event.addListener(marker, 'rightclick', function (e) {
                 removeOrderMarker(marker);
@@ -60,9 +62,9 @@
                 infowindow.close();
             });
             google.maps.event.addListener(marker, 'dragend', function (e) {
-                reverseGeocoding(e.latLng, function (address) {
-                    infowindow.setContent(address);
-                    infowindow.open(map, marker);
+                reverseGeocoding(e.latLng, function (latLng, address) {
+                    var divId = "#" + marker.orderId;
+                    $(divId).find("input[name^='address_']").val(address);
                 });
             });
 
@@ -74,6 +76,7 @@
             marker.orderId = data.Id;
             orderMarkers.push(marker);
             var divId = "#" + data.Id;
+            $(divId).find("input[name^='address_']").val(address);
             $(divId).find("button").prop("disabled", false);
         }
 
@@ -87,6 +90,7 @@
         function createDepot(latLng, address, data) {
             removeDepotMarker();
             createDepotMarker(latLng, address);
+            $("#depotAddress").val(address);
             $("#showDepotBtn").prop("disabled", false);
         }
 
@@ -136,7 +140,7 @@
         function addOrderHandler(latLng, address, data) {
             createOrder(latLng, address, data);
             ++nextId;
-            var str = '<div id="' + nextId + '"><br/><label for="name_0">Name: </label><input id="name_0" name="name_0" type="text" /><br /><br />';
+            var str = '<div id="' + nextId + '"><br/><label for="name_' + nextId + '">Name: </label><input id="name_' + nextId + '" name="name_' + nextId + '" type="text" /><br /><br />';
             str += '<label for="address_' + nextId + '">Address: </label><input id="address_' + nextId + '" name="address_' + nextId + '" type="text"/><br/><br/>';
             str += '<label for="orderAmount_' + nextId + '">Amount: </label><input id="orderAmount_' + nextId + '" name="orderAmount_' + nextId + '" type="text"/>';
             str += '<br/><br/><button name="showOrderBtn" disabled="disabled" data-id="' + nextId + '">Show on map</button> <button name="deleteOrderBtn" disabled="disabled" data-id="' + nextId + '">Delete</button><br/><br/></div>';
@@ -192,14 +196,16 @@
                     $(this).siblings("button[name='showOrderBtn']").prop("disabled", true);
                     removeOrderMarker(marker);
                 }
-                var any = false;
-                $(this).siblings("input").each(function () {
-                    if ($(this).val() !== "")
-                        any = true;
-                });
-                if (!any){
-                    $(this).parent().remove();
-                    return;
+                if (address === "") {
+                    var any = false;
+                    $(this).siblings("input").each(function () {
+                        if ($(this).val() !== "")
+                            any = true;
+                    });
+                    if (!any) {
+                        $(this).parent().remove();
+                        return;
+                    }
                 }
                 geocoding(address, createOrder, { Id: divId });
             });
@@ -257,6 +263,17 @@
             bottom: 0;
             background: #eee;
             overflow: auto;
+        }
+
+        #formId label {
+            position: absolute;
+            width: 25%;
+        }
+
+        #formId input {
+            position: absolute;
+            left: 25%;
+            width: 65%;
         }
     </style>
 </head>
