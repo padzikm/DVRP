@@ -15,8 +15,9 @@
         var geocoder;
         var depotMarker;
         var orderMarkers = [];
+        var nextId = 0;
 
-        function initialize() {
+        function initializeMap() {
             var mapOptions = {
                 zoom: 10,
                 center: new google.maps.LatLng(52.22207512938468, 21.006942987442017)
@@ -27,96 +28,214 @@
             geocoder = new google.maps.Geocoder();
 
             google.maps.event.addListener(map, 'click', function (e) {
-                createOrderMarker(e.latLng);
+                reverseGeocoding(e.latLng, createOrderMarker);
             });
 
             google.maps.event.addListener(map, 'rightclick', function (e) {
-                if (depotMarker != null)
-                    depotMarker.setMap(null);
-                createDepotMarker(e.latLng);
+                removeDepotMarker();
+                reverseGeocoding(e.latLng, createDepotMarker);
             });
         }
 
-        function createOrderMarker(latLng) {
-            var callback = function (address) {
-                var infowindow = new google.maps.InfoWindow({
-                    content: address
-                });
-                var marker = new google.maps.Marker({
-                    position: latLng,
-                    map: map,
-                    title: 'Order',
-                    icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png',
-                    draggable: true
-                });
-                orderMarkers.push(marker);
+        function createOrderMarker(latLng, address) {
+            var infowindow = new google.maps.InfoWindow({
+                content: address
+            });
+            var marker = new google.maps.Marker({
+                position: latLng,
+                map: map,
+                title: 'Order',
+                icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png',
+                draggable: true,
+                infoWindow: infowindow
+            });
+
+            google.maps.event.addListener(marker, 'click', function (e) {
                 infowindow.open(map, marker);
-                google.maps.event.addListener(marker, 'click', function (e) {
+            });
+            google.maps.event.addListener(marker, 'rightclick', function (e) {
+                removeOrderMarker(marker);
+            });
+            google.maps.event.addListener(marker, 'dragstart', function (e) {
+                infowindow.close();
+            });
+            google.maps.event.addListener(marker, 'dragend', function (e) {
+                reverseGeocoding(e.latLng, function (address) {
+                    infowindow.setContent(address);
                     infowindow.open(map, marker);
                 });
-                google.maps.event.addListener(marker, 'rightclick', function (e) {
-                    var index = orderMarkers.indexOf(marker);
-                    orderMarkers.splice(index, 1);
-                    marker.setMap(null);
-                });
-                google.maps.event.addListener(marker, 'dragstart', function(e) {
-                    infowindow.close();
-                });
-                google.maps.event.addListener(marker, 'dragend', function (e) {
-                    reverseGeocoding(e.latLng, function (address) {
-                        console.log(infowindow);
-                        infowindow.setContent(address);
-                        infowindow.open(map, marker);
-                    });
-                });
-            }
+            });
 
-            reverseGeocoding(latLng, callback);
+            return marker;
         }
 
-        function createDepotMarker(latLng) {
-            var callback = function (address) {
-                var infowindow = new google.maps.InfoWindow({
-                    content: address
-                });
-                depotMarker = new google.maps.Marker({
-                    position: latLng,
-                    map: map,
-                    title: 'Depot',
-                    icon: 'http://maps.google.com/mapfiles/ms/icons/purple-dot.png'
-                });
+        function createOrder(latLng, address, data) {
+            var marker = createOrderMarker(latLng, address);
+            marker.orderId = data.Id;
+            orderMarkers.push(marker);
+            var divId = "#" + data.Id;
+            $(divId).find("button").prop("disabled", false);
+        }
+
+        function removeOrderMarker(marker) {
+            var index = orderMarkers.indexOf(marker);
+            orderMarkers.splice(index, 1);
+            google.maps.event.clearInstanceListeners(marker);
+            marker.setMap(null);
+        }
+
+        function createDepot(latLng, address, data) {
+            removeDepotMarker();
+            createDepotMarker(latLng, address);
+            $("#showDepotBtn").prop("disabled", false);
+        }
+
+        function createDepotMarker(latLng, address) {
+            var infowindow = new google.maps.InfoWindow({
+                content: address
+            });
+            depotMarker = new google.maps.Marker({
+                position: latLng,
+                map: map,
+                title: 'Depot',
+                icon: 'http://maps.google.com/mapfiles/ms/icons/purple-dot.png',
+                infoWindow: infowindow
+            });
+
+            google.maps.event.addListener(depotMarker, 'click', function (e) {
                 infowindow.open(map, depotMarker);
-                google.maps.event.addListener(depotMarker, 'click', function (e) {
-                    infowindow.open(map, depotMarker);
-                });
-            }
-
-            reverseGeocoding(latLng, callback);
+            });
         }
 
-        function reverseGeocoding(latLng, func) {
-            var res = "";
+        function removeDepotMarker() {
+            if (depotMarker != null) {
+                depotMarker.setMap(null);
+                google.maps.event.clearInstanceListeners(depotMarker);
+                depotMarker = null;
+            }
+        }
+
+        function geocoding(address, func, data) {
+            geocoder.geocode({ 'address': address }, function (results, status) {
+                if (status === google.maps.GeocoderStatus.OK) {
+                    var latLng = results[0].geometry.location;
+                    func(latLng, address, data);
+                }
+            });
+        }
+
+        function reverseGeocoding(latLng, func, data) {
             geocoder.geocode({ 'latLng': latLng }, function (results, status) {
-                console.log(status);
-                console.log(results);
                 if (status === google.maps.GeocoderStatus.OK) {
                     if (results[0])
-                        res = results[0].formatted_address;
-                    else
-                        res = "No results found";
-                } else
-                    res = "Geocoder failed due to: " + status;
-
-                func(res);
+                        func(latLng, results[0].formatted_address, data);
+                }
             });
+        }
+
+        function addOrderHandler(latLng, address, data) {
+            createOrder(latLng, address, data);
+            ++nextId;
+            var str = '<div id="' + nextId + '"><br/><label for="name_0">Name: </label><input id="name_0" name="name_0" type="text" /><br /><br />';
+            str += '<label for="address_' + nextId + '">Address: </label><input id="address_' + nextId + '" name="address_' + nextId + '" type="text"/><br/><br/>';
+            str += '<label for="orderAmount_' + nextId + '">Amount: </label><input id="orderAmount_' + nextId + '" name="orderAmount_' + nextId + '" type="text"/>';
+            str += '<br/><br/><button name="showOrderBtn" disabled="disabled" data-id="' + nextId + '">Show on map</button> <button name="deleteOrderBtn" disabled="disabled" data-id="' + nextId + '">Delete</button><br/><br/></div>';
+            $("#orders").prepend(str);
+        }
+
+        function setEventHandlers() {
+            $("#computeBtn").click(function (e) {
+                e.preventDefault();
+            });
+
+            $("#depotAddress").blur(function (e) {
+                var address = $(this).val();
+                if (address === "") {
+                    removeDepotMarker();
+                    $("#showDepotBtn").prop("disabled", true);
+                    return;
+                }
+                geocoding(address, createDepot);
+            });
+
+            $("#showDepotBtn").click(function (e) {
+                e.preventDefault();
+                if (depotMarker != null)
+                    depotMarker.infoWindow.open(map, depotMarker);
+            });
+
+            $("#deleteDepotBtn").click(function (e) {
+                e.preventDefault();
+                removeDepotMarker();
+                $("#depot input").val("");
+                $("#showDepotBtn").prop("disabled", true);
+            });
+
+            $("#addOrderBtn").click(function (e) {
+                e.preventDefault();
+                var firstId = $("#orders").children().first().attr("id");
+                var addressId = "#address_" + firstId;
+                var address = $(addressId).val();
+                if (address === "")
+                    return;
+                geocoding(address, addOrderHandler, { Id: firstId });
+            });
+
+            $(document).on("blur", "[name^='address_']", function (e) {
+                var firstId = $("#orders").children().first().attr("id");
+                var divId = $(this).parent().first().attr("id");
+                if (firstId === divId)
+                    return;
+                var address = $(this).val();
+                var marker = findMarker(divId);
+                if (marker != null) {
+                    $(this).siblings("button[name='showOrderBtn']").prop("disabled", true);
+                    removeOrderMarker(marker);
+                }
+                var any = false;
+                $(this).siblings("input").each(function () {
+                    if ($(this).val() !== "")
+                        any = true;
+                });
+                if (!any){
+                    $(this).parent().remove();
+                    return;
+                }
+                geocoding(address, createOrder, { Id: divId });
+            });
+
+            $(document).on("click", "button[name='showOrderBtn']", function (e) {
+                e.preventDefault();
+                var dataId = $(this).data("id");
+                var marker = findMarker(dataId);
+                marker.infoWindow.open(map, marker);
+            });
+
+            $(document).on("click", "button[name='deleteOrderBtn']", function (e) {
+                e.preventDefault();
+                var dataId = $(this).data("id");
+                var marker = findMarker(dataId);
+                removeOrderMarker(marker);
+                var divId = "#" + dataId;
+                $(divId).remove();
+            });
+        }
+
+        function findMarker(id) {
+            var marker;
+            for (var i = 0, len = orderMarkers.length; i < len; ++i)
+                if (parseInt(orderMarkers[i].orderId) === parseInt(id)) {
+                    marker = orderMarkers[i];
+                    break;
+                }
+
+            return marker;
         }
 
         $(function () {
-            initialize();
+            initializeMap();
 
-            $("#submitBtn").click(function (e) {
-                e.preventDefault();
-            });
+            setEventHandlers();
         });
 
     </script>
@@ -137,6 +256,7 @@
             right: 0;
             bottom: 0;
             background: #eee;
+            overflow: auto;
         }
     </style>
 </head>
@@ -144,7 +264,50 @@
     <div id="map"></div>
     <div id="panel">
         <form id="formId">
-            <button id="submitBtn" type="submit">Compute</button>
+            <fieldset>
+                <legend>DVRP data:</legend>
+                <p>Depot:</p>
+                <div id="depot">
+                    <label for="depotAddress">Address:</label>
+                    <input id="depotAddress" type="text" />
+                    <br />
+                    <br />
+                    <label for="trackCount">Track count:</label>
+                    <input id="trackCount" name="trackCount" type="text" />
+                    <br />
+                    <br />
+                    <label for="trackLoad">Track load:</label>
+                    <input id="trackLoad" name="trackLoad" type="text" />
+                    <br />
+                    <br />
+                    <button id="showDepotBtn" disabled="disabled">Show on map</button>
+                    <button id="deleteDepotBtn">Delete</button>
+                    <br />
+                    <br />
+                </div>
+                <p>Orders:</p>
+                <button id="addOrderBtn">Add order</button>
+                <button id="computeBtn">Compute</button>
+                <div id="orders">
+                    <div id="0">
+                        <br />
+                        <label for="name_0">Name:</label>
+                        <input id="name_0" name="name_0" type="text" />
+                        <br />
+                        <br />
+                        <label for="address_0">Address:</label>
+                        <input id="address_0" name="address_0" type="text" />
+                        <br />
+                        <br />
+                        <label for="orderAmount_0">Amount:</label>
+                        <input id="orderAmount_0" name="orderAmount_0" type="text" />
+                        <br />
+                        <br />
+                        <button name="showOrderBtn" disabled="disabled" data-id="0">Show on map</button>
+                        <button name="deleteOrderBtn" disabled="disabled" data-id="0">Delete</button>
+                    </div>
+                </div>
+            </fieldset>
         </form>
     </div>
 </body>
