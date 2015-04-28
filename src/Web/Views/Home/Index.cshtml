@@ -12,6 +12,7 @@
     <script type="text/javascript">
 
         var map;
+        var geocoder;
         var depotMarker;
         var orderMarkers = [];
 
@@ -20,33 +21,102 @@
                 zoom: 10,
                 center: new google.maps.LatLng(52.22207512938468, 21.006942987442017)
             };
+
             map = new google.maps.Map(document.getElementById('map'), mapOptions);
 
+            geocoder = new google.maps.Geocoder();
+
             google.maps.event.addListener(map, 'click', function (e) {
-                console.log(e);
-                var marker = new google.maps.Marker({
-                    position: e.latLng,
-                    map: map,
-                    title: 'Order',
-                    icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png'
-                });
-                orderMarkers.push(marker);
+                createOrderMarker(e.latLng);
             });
 
             google.maps.event.addListener(map, 'rightclick', function (e) {
                 if (depotMarker != null)
                     depotMarker.setMap(null);
+                createDepotMarker(e.latLng);
+            });
+        }
+
+        function createOrderMarker(latLng) {
+            var callback = function (address) {
+                var infowindow = new google.maps.InfoWindow({
+                    content: address
+                });
+                var marker = new google.maps.Marker({
+                    position: latLng,
+                    map: map,
+                    title: 'Order',
+                    icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png',
+                    draggable: true
+                });
+                orderMarkers.push(marker);
+                infowindow.open(map, marker);
+                google.maps.event.addListener(marker, 'click', function (e) {
+                    infowindow.open(map, marker);
+                });
+                google.maps.event.addListener(marker, 'rightclick', function (e) {
+                    var index = orderMarkers.indexOf(marker);
+                    orderMarkers.splice(index, 1);
+                    marker.setMap(null);
+                });
+                google.maps.event.addListener(marker, 'dragstart', function(e) {
+                    infowindow.close();
+                });
+                google.maps.event.addListener(marker, 'dragend', function (e) {
+                    reverseGeocoding(e.latLng, function (address) {
+                        console.log(infowindow);
+                        infowindow.setContent(address);
+                        infowindow.open(map, marker);
+                    });
+                });
+            }
+
+            reverseGeocoding(latLng, callback);
+        }
+
+        function createDepotMarker(latLng) {
+            var callback = function (address) {
+                var infowindow = new google.maps.InfoWindow({
+                    content: address
+                });
                 depotMarker = new google.maps.Marker({
-                    position: e.latLng,
+                    position: latLng,
                     map: map,
                     title: 'Depot',
                     icon: 'http://maps.google.com/mapfiles/ms/icons/purple-dot.png'
                 });
+                infowindow.open(map, depotMarker);
+                google.maps.event.addListener(depotMarker, 'click', function (e) {
+                    infowindow.open(map, depotMarker);
+                });
+            }
+
+            reverseGeocoding(latLng, callback);
+        }
+
+        function reverseGeocoding(latLng, func) {
+            var res = "";
+            geocoder.geocode({ 'latLng': latLng }, function (results, status) {
+                console.log(status);
+                console.log(results);
+                if (status === google.maps.GeocoderStatus.OK) {
+                    if (results[0])
+                        res = results[0].formatted_address;
+                    else
+                        res = "No results found";
+                } else
+                    res = "Geocoder failed due to: " + status;
+
+                func(res);
             });
         }
 
         $(function () {
             initialize();
+
+            $("#submitBtn").click(function (e) {
+                e.preventDefault();
+            });
         });
 
     </script>
@@ -55,6 +125,15 @@
             position: absolute;
             top: 0;
             left: 0;
+            right: 25%;
+            bottom: 0;
+            background: #eee;
+        }
+
+        #panel {
+            position: absolute;
+            top: 0;
+            left: 75%;
             right: 0;
             bottom: 0;
             background: #eee;
@@ -63,5 +142,10 @@
 </head>
 <body>
     <div id="map"></div>
+    <div id="panel">
+        <form id="formId">
+            <button id="submitBtn" type="submit">Compute</button>
+        </form>
+    </div>
 </body>
 </html>
