@@ -124,6 +124,7 @@
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\Home\Index\Style.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -131,6 +132,14 @@
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
+    <Content Include="Scripts\Home\Index\Depot.js" />
+    <Content Include="Scripts\Home\Index\Events.js" />
+    <Content Include="Scripts\Home\Index\Initialization.js" />
+    <Content Include="Scripts\Home\Index\Map.js" />
+    <Content Include="Scripts\Home\Index\Orders.js" />
+    <Content Include="Scripts\Home\Index\Services.js" />
+    <Content Include="Scripts\Home\Index\Utils.js" />
+    <Content Include="Scripts\Home\Index\Variables.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
