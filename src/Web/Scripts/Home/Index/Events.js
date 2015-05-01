@@ -65,7 +65,7 @@ function setEvents() {
         }
         if (address === "") {
             var any = false;
-            $(thisSelector).find("input").each(function () {
+            $(thisSelector).find("input:not([type='hidden'])").each(function () {
                 if ($(this).val() !== "")
                     any = true;
             });

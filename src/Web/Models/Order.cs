@@ -2,6 +2,8 @@
 {
     public class Order
     {
+        public Point Coords { get; set; }
+
         public string Name { get; set; }
 
         public string Address { get; set; }

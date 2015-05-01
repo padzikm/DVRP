@@ -37,7 +37,11 @@ function createOrder(latLng, address, data) {
     marker.orderId = data.Id;
     orderMarkers.push(marker);
     var thisId = "#" + data.Id;
+    var lat = latLng.lat();
+    var lng = latLng.lng();
     $(thisId).find("input[name$='address']").val(address);
+    $(thisId).find("input[type='hidden'][name$='lat']").val(lat);
+    $(thisId).find("input[type='hidden'][name$='lng']").val(lng);
     $(thisId).find("button").prop("disabled", false);
 }
 
@@ -54,6 +58,8 @@ function addOrderHandler(latLng, address, data) {
     createOrder(latLng, address, data);
     ++nextId;
     var str = '<tr id="' + nextId + '"><input type="hidden" name="orders.Index" value="' + nextId + '" style="display: none;"/>';
+    str += '<td style="display: none"><input type="hidden" name="orders[' + nextId + '].coords.lat" value="0"/></td>';
+    str += '<td style="display: none"><input type="hidden" name="orders[' + nextId + '].coords.lng" value="0" /></td>';
     str += '<td><input id="orders[' + nextId + '].name" name="orders[' + nextId + '].name" type="text" /></td>';
     str += '<td><input id="orders[' + nextId + '].address" name="orders[' + nextId + '].address" type="text"/></td>';
     str += '<td><input id="orders[' + nextId + '].amount" name="orders[' + nextId + '].amount" type="text"/></td>';

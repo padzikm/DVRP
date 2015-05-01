@@ -3,6 +3,10 @@ function createDepot(latLng, address, data) {
     removeDepotMarker();
     createDepotMarker(latLng, address);
     $("#depot\\.address").val(address);
+    var lat = latLng.lat();
+    var lng = latLng.lng();
+    $("[name='depot.coords.lat']").val(lat);
+    $("[name='depot.coords.lng']").val(lng);
     $("#showDepotBtn").prop("disabled", false);
 }
 

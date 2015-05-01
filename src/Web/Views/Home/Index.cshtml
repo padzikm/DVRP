@@ -39,29 +39,35 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>
-                                    <input id="depot.address" name="depot.address" type="text" />
-                                </td>
-                                <td>
-                                    <input id="depot.truckCount" name="depot.truckCount" type="text" />
-                                </td>
-                                <td>
-                                    <input id="depot.truckLoad" name="depot.truckLoad" type="text" />
-                                </td>
-                                <td>
-                                    <input id="depot.openHour" name="depot.openHour" type="text" />
-                                </td>
-                                <td>
-                                    <input id="depot.closeHour" name="depot.closeHour" type="text" />
-                                </td>
-                                <td>
-                                    <button id="showDepotBtn" disabled="disabled">Show</button>
-                                </td>
-                                <td>
-                                    <button id="deleteDepotBtn">Delete</button>
-                                </td>
-                            </tr>
+                        <tr>
+                            <td style="display: none">
+                                <input type="hidden" name="depot.coords.lat" />
+                            </td>
+                            <td style="display: none">
+                                <input type="hidden" name="depot.coords.lng" />
+                            </td>
+                            <td>
+                                <input id="depot.address" name="depot.address" type="text"/>
+                            </td>
+                            <td>
+                                <input id="depot.truckCount" name="depot.truckCount" type="text"/>
+                            </td>
+                            <td>
+                                <input id="depot.truckLoad" name="depot.truckLoad" type="text"/>
+                            </td>
+                            <td>
+                                <input id="depot.openHour" name="depot.openHour" type="text"/>
+                            </td>
+                            <td>
+                                <input id="depot.closeHour" name="depot.closeHour" type="text"/>
+                            </td>
+                            <td>
+                                <button id="showDepotBtn" disabled="disabled">Show</button>
+                            </td>
+                            <td>
+                                <button id="deleteDepotBtn">Delete</button>
+                            </td>
+                        </tr>
                         </tbody>
                     </table>
                 </div>
@@ -84,7 +90,13 @@
                         <tbody>
                             <tr id="0">
                                 <td style="display: none">
-                                    <input type="hidden" name="orders.Index" value="0" />
+                                    <input type="hidden" name="orders.Index" value="0"/>
+                                </td>
+                                <td style="display: none">
+                                    <input type="hidden" name="orders[0].coords.lat" />
+                                </td>
+                                <td style="display: none">
+                                    <input type="hidden" name="orders[0].coords.lng" />
                                 </td>
                                 <td>
                                     <input id="orders[0].name" name="orders[0].name" type="text" />
