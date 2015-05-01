@@ -26,16 +26,16 @@
                 <legend>DVRP data:</legend>
                 <p>Depot:</p>
                 <div id="depot">
-                    <label for="depotAddress">Address:</label>
-                    <input id="depotAddress" type="text" />
+                    <label for="depot.address">Address:</label>
+                    <input id="depot.address" name="depot.address" type="text" />
                     <br />
                     <br />
-                    <label for="trackCount">Track count:</label>
-                    <input id="trackCount" name="trackCount" type="text" />
+                    <label for="depot.truckCount">Track count:</label>
+                    <input id="depot.truckCount" name="depot.truckCount" type="text" />
                     <br />
                     <br />
-                    <label for="trackLoad">Track load:</label>
-                    <input id="trackLoad" name="trackLoad" type="text" />
+                    <label for="depot.truckLoad">Track load:</label>
+                    <input id="depot.truckLoad" name="depot.truckLoad" type="text" />
                     <br />
                     <br />
                     <button id="showDepotBtn" disabled="disabled">Show on map</button>
@@ -48,19 +48,20 @@
                 <button id="computeBtn">Compute</button>
                 <div id="orders">
                     <div id="0">
-                        <br />
-                        <label for="name_0">Name:</label>
-                        <input id="name_0" name="name_0" type="text" />
-                        <br />
-                        <br />
-                        <label for="address_0">Address:</label>
-                        <input id="address_0" name="address_0" type="text" />
-                        <br />
-                        <br />
-                        <label for="orderAmount_0">Amount:</label>
-                        <input id="orderAmount_0" name="orderAmount_0" type="text" />
-                        <br />
-                        <br />
+                        <input type="hidden" name="orders.Index" value="0"/>
+                        <br/>
+                        <label for="orders[0].name">Name:</label>
+                        <input id="orders[0].name" name="orders[0].name" type="text"/>
+                        <br/>
+                        <br/>
+                        <label for="orders[0].address">Address:</label>
+                        <input id="orders[0].address" name="orders[0].address" type="text"/>
+                        <br/>
+                        <br/>
+                        <label for="orders[0].amount">Amount:</label>
+                        <input id="orders[0].amount" name="orders[0].amount" type="text"/>
+                        <br/>
+                        <br/>
                         <button name="showOrderBtn" disabled="disabled" data-id="0">Show on map</button>
                         <button name="deleteOrderBtn" disabled="disabled" data-id="0">Delete</button>
                     </div>

@@ -15,7 +15,6 @@ function initializeMap() {
     });
 
     google.maps.event.addListener(map, 'rightclick', function (e) {
-        removeDepotMarker();
         reverseGeocoding(e.latLng, createDepot);
     });
 }

@@ -2,7 +2,7 @@
 function createDepot(latLng, address, data) {
     removeDepotMarker();
     createDepotMarker(latLng, address);
-    $("#depotAddress").val(address);
+    $("#depot\\.address").val(address);
     $("#showDepotBtn").prop("disabled", false);
 }
 
@@ -19,7 +19,7 @@ function createDepotMarker(latLng, address) {
     });
 
     google.maps.event.addListener(depotMarker, 'click', function (e) {
-        $("#trackCount").focus();
+        $("#depot.trackCount").focus();
     });
 }
 

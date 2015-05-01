@@ -1,4 +1,6 @@
-﻿using System.Web.Mvc;
+﻿using System.Collections.Generic;
+using System.Web.Mvc;
+using Web.Models;
 
 namespace Web.Controllers
 {
@@ -7,6 +9,11 @@ namespace Web.Controllers
         public ActionResult Index()
         {
             return View();
+        }
+
+        public ActionResult Compute(Depot depot, IEnumerable<Order> orders)
+        {
+            return Json("ok");
         }
     }
 }

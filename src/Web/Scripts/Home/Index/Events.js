@@ -1,10 +1,24 @@
 ﻿
 function setEvents() {
-    $("#computeBtn").click(function(e) {
+    $("#computeBtn").click(function (e) {
+        var firstDivId = $("#orders").children().first().attr("id");
+        var selector = "#" + firstDivId + " input";
+        $(selector).prop("disabled", true);
+        var form = $("#formId").serialize();
+        $(selector).prop("disabled", false);
+
+        $.ajax({
+            url: "/Home/Compute",
+            data: form,
+            method: "POST",
+            success: function (data) { console.log(data); },
+            error: function () { console.log("failed"); }
+        });
+        
         e.preventDefault();
     });
 
-    $("#depotAddress").blur(function(e) {
+    $("#depot.address").blur(function(e) {
         var address = $(this).val();
         if (address === "") {
             removeDepotMarker();
@@ -29,15 +43,14 @@ function setEvents() {
 
     $("#addOrderBtn").click(function(e) {
         e.preventDefault();
-        var firstId = $("#orders").children().first().attr("id");
-        var addressId = "#address_" + firstId;
-        var address = $(addressId).val();
+        var divId = "#" + $("#orders").children().first().attr("id");
+        var address = $(divId).find("input[name$='address']").val();
         if (address === "")
             return;
-        geocoding(address, addOrderHandler, { Id: firstId });
+        geocoding(address, addOrderHandler, { Id: divId });
     });
 
-    $(document).on("blur", "[name^='address_']", function(e) {
+    $(document).on("blur", "[name^='orders['][name$='].address']", function (e) {
         var firstId = $("#orders").children().first().attr("id");
         var divId = $(this).parent().first().attr("id");
         if (firstId === divId)
