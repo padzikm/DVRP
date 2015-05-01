@@ -69,3 +69,34 @@ function addOrderHandler(latLng, address, data) {
     str += '<td><button name="deleteOrderBtn" disabled="disabled" data-id="' + nextId + '">Delete</button></td></tr>';
     $(str).prependTo("#orders table > tbody");
 }
+
+function insertOrders(json) {
+    var ordersIndex = json["orders.Index"];
+
+    for (var index in ordersIndex) {
+        if (ordersIndex.hasOwnProperty(index)) {
+            var lat = json["orders[" + index + "].coords.lat"];
+            var lng = json["orders[" + index + "].coords.lng"];
+            var address = json["orders[" + index + "].address"];
+            var name = json["orders[" + index + "].name"];
+            var amount = json["orders[" + index + "].amount"];
+            var openHour = json["orders[" + index + "].openHour"];
+            var closeHour = json["orders[" + index + "].closeHour"];
+
+            if (address === "")
+                continue;
+
+            var firstId = findNotAddedOrderId();
+            var selector = "[id='orders[" + firstId + "]";
+
+            $(selector + ".name']").val(name);
+            $(selector + ".amount']").val(amount);
+            $(selector + ".openHour']").val(openHour);
+            $(selector + ".closeHour']").val(closeHour);
+
+            var latLng = new google.maps.LatLng(lat, lng);
+
+            addOrderHandler(latLng, address, { Id: firstId });
+        }
+    }
+}

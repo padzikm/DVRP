@@ -14,11 +14,11 @@ function setEvents() {
             success: function (data) { console.log(data); },
             error: function () { console.log("failed"); }
         });
-        
+
         e.preventDefault();
     });
 
-    $("#depot.address").blur(function(e) {
+    $("#depot.address").blur(function (e) {
         var address = $(this).val();
         if (address === "") {
             removeDepotMarker();
@@ -28,20 +28,20 @@ function setEvents() {
         geocoding(address, createDepot);
     });
 
-    $("#showDepotBtn").click(function(e) {
+    $("#showDepotBtn").click(function (e) {
         e.preventDefault();
         if (depotMarker != null)
             depotMarker.infoWindow.open(map, depotMarker);
     });
 
-    $("#deleteDepotBtn").click(function(e) {
+    $("#deleteDepotBtn").click(function (e) {
         e.preventDefault();
         removeDepotMarker();
         $("#depot input").val("");
         $("#showDepotBtn").prop("disabled", true);
     });
 
-    $("#addOrderBtn").click(function(e) {
+    $("#addOrderBtn").click(function (e) {
         e.preventDefault();
         var firstId = findNotAddedOrderId();
         var selector = "#" + firstId;
@@ -77,14 +77,14 @@ function setEvents() {
         geocoding(address, createOrder, { Id: thisId });
     });
 
-    $(document).on("click", "button[name='showOrderBtn']", function(e) {
+    $(document).on("click", "button[name='showOrderBtn']", function (e) {
         e.preventDefault();
         var dataId = $(this).data("id");
         var marker = findMarker(dataId);
         marker.infoWindow.open(map, marker);
     });
 
-    $(document).on("click", "button[name='deleteOrderBtn']", function(e) {
+    $(document).on("click", "button[name='deleteOrderBtn']", function (e) {
         e.preventDefault();
         var dataId = $(this).data("id");
         var marker = findMarker(dataId);
@@ -111,5 +111,23 @@ function setEvents() {
 
     $("#readFromFileBtn").click(function (e) {
         e.preventDefault();
+    });
+
+    $("#files").change(function (evt) {
+        var jsonObj = null;
+        var files = evt.target.files;
+        var f = files[0];
+        var reader = new FileReader();
+
+        reader.onload = (function (theFile) {
+            return function (e) {
+                jsonObj = JSON.parse(e.target.result);
+
+                insertDepot(jsonObj);
+                insertOrders(jsonObj);
+            };
+        })(f);
+
+        reader.readAsText(f);
     });
 }
