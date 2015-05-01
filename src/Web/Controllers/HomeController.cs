@@ -11,6 +11,7 @@ namespace Web.Controllers
             return View();
         }
 
+        [HttpPost]
         public ActionResult Compute(Depot depot, IEnumerable<Order> orders)
         {
             return Json("ok");

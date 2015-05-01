@@ -1,8 +1,8 @@
 ﻿
 function setEvents() {
     $("#computeBtn").click(function (e) {
-        var firstDivId = $("#orders").children().first().attr("id");
-        var selector = "#" + firstDivId + " input";
+        var firstId = findNotAddedOrderId();
+        var selector = "#" + firstId + " input";
         $(selector).prop("disabled", true);
         var form = $("#formId").serialize();
         $(selector).prop("disabled", false);
@@ -43,36 +43,38 @@ function setEvents() {
 
     $("#addOrderBtn").click(function(e) {
         e.preventDefault();
-        var divId = "#" + $("#orders").children().first().attr("id");
-        var address = $(divId).find("input[name$='address']").val();
+        var firstId = findNotAddedOrderId();
+        var selector = "#" + firstId;
+        var address = $(selector).find("input[name$='address']").val();
         if (address === "")
             return;
-        geocoding(address, addOrderHandler, { Id: divId });
+        geocoding(address, addOrderHandler, { Id: firstId });
     });
 
     $(document).on("blur", "[name^='orders['][name$='].address']", function (e) {
-        var firstId = $("#orders").children().first().attr("id");
-        var divId = $(this).parent().first().attr("id");
-        if (firstId === divId)
+        var firstId = findNotAddedOrderId();
+        var thisId = findInputOrderId(this);
+        if (firstId === thisId)
             return;
+        var thisSelector = "#" + thisId;
         var address = $(this).val();
-        var marker = findMarker(divId);
+        var marker = findMarker(thisId);
         if (marker != null) {
-            $(this).siblings("button[name='showOrderBtn']").prop("disabled", true);
+            $(thisSelector).find("button[name='showOrderBtn']").prop("disabled", true);
             removeOrderMarker(marker);
         }
         if (address === "") {
             var any = false;
-            $(this).siblings("input").each(function() {
+            $(thisSelector).find("input").each(function () {
                 if ($(this).val() !== "")
                     any = true;
             });
             if (!any) {
-                $(this).parent().remove();
+                $(thisSelector).remove();
                 return;
             }
         }
-        geocoding(address, createOrder, { Id: divId });
+        geocoding(address, createOrder, { Id: thisId });
     });
 
     $(document).on("click", "button[name='showOrderBtn']", function(e) {
@@ -87,7 +89,7 @@ function setEvents() {
         var dataId = $(this).data("id");
         var marker = findMarker(dataId);
         removeOrderMarker(marker);
-        var divId = "#" + dataId;
-        $(divId).remove();
+        var thisId = "#" + dataId;
+        $(thisId).remove();
     });
 }

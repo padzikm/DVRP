@@ -10,7 +10,7 @@ function initializeMap() {
     geocoder = new google.maps.Geocoder();
 
     google.maps.event.addListener(map, 'click', function (e) {
-        var firstId = $("#orders").children().first().attr("id");
+        var firstId = findNotAddedOrderId();
         reverseGeocoding(e.latLng, addOrderHandler, { Id: firstId });
     });
 

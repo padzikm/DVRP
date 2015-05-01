@@ -13,8 +13,8 @@ function createOrderMarker(latLng, address) {
     });
 
     google.maps.event.addListener(marker, 'click', function (e) {
-        var divId = "#" + marker.orderId;
-        $(divId).find("input[name$='name']").focus();
+        var thisId = "#" + marker.orderId;
+        $(thisId).find("input[name$='name']").focus();
     });
     google.maps.event.addListener(marker, 'rightclick', function (e) {
         removeOrderMarker(marker);
@@ -24,8 +24,8 @@ function createOrderMarker(latLng, address) {
     });
     google.maps.event.addListener(marker, 'dragend', function (e) {
         reverseGeocoding(e.latLng, function (latLng, address) {
-            var divId = "#" + marker.orderId;
-            $(divId).find("input[name$='address']").val(address);
+            var thisId = "#" + marker.orderId;
+            $(thisId).find("input[name$='address']").val(address);
         });
     });
 
@@ -36,25 +36,30 @@ function createOrder(latLng, address, data) {
     var marker = createOrderMarker(latLng, address);
     marker.orderId = data.Id;
     orderMarkers.push(marker);
-    var divId = "#" + data.Id;
-    $(divId).find("input[name$='address']").val(address);
-    $(divId).find("button").prop("disabled", false);
+    var thisId = "#" + data.Id;
+    $(thisId).find("input[name$='address']").val(address);
+    $(thisId).find("button").prop("disabled", false);
 }
 
 function removeOrderMarker(marker) {
+    var thisId = "#" + marker.orderId;
     var index = orderMarkers.indexOf(marker);
     orderMarkers.splice(index, 1);
     google.maps.event.clearInstanceListeners(marker);
     marker.setMap(null);
+    $(thisId).remove();
 }
 
 function addOrderHandler(latLng, address, data) {
     createOrder(latLng, address, data);
     ++nextId;
-    var str = '<div id="' + nextId + '"><br/><input type="hidden" name="orders.Index" value="' + nextId + '"/>';
-    str += '<label for="orders[' + nextId + '].name">Name: </label><input id="orders[' + nextId + '].name" name="orders[' + nextId + '].name" type="text" /><br /><br />';
-    str += '<label for="orders[' + nextId + '].address">Address: </label><input id="orders[' + nextId + '].address" name="orders[' + nextId + '].address" type="text"/><br/><br/>';
-    str += '<label for="orders[' + nextId + '].amount">Amount: </label><input id="orders[' + nextId + '].amount" name="orders[' + nextId + '].amount" type="text"/>';
-    str += '<br/><br/><button name="showOrderBtn" disabled="disabled" data-id="' + nextId + '">Show on map</button> <button name="deleteOrderBtn" disabled="disabled" data-id="' + nextId + '">Delete</button><br/><br/></div>';
-    $("#orders").prepend(str);
+    var str = '<tr id="' + nextId + '"><input type="hidden" name="orders.Index" value="' + nextId + '" style="display: none;"/>';
+    str += '<td><input id="orders[' + nextId + '].name" name="orders[' + nextId + '].name" type="text" /></td>';
+    str += '<td><input id="orders[' + nextId + '].address" name="orders[' + nextId + '].address" type="text"/></td>';
+    str += '<td><input id="orders[' + nextId + '].amount" name="orders[' + nextId + '].amount" type="text"/></td>';
+    str += '<td><input id="orders[' + nextId + '].openHour" name="orders[' + nextId + '].openHour" type="text" /></td>';
+    str += '<td><input id="orders[' + nextId + '].closeHour" name="orders[' + nextId + '].closeHour" type="text" /></td>';
+    str += '<td><button name="showOrderBtn" disabled="disabled" data-id="' + nextId + '">Show</button></td>';
+    str += '<td><button name="deleteOrderBtn" disabled="disabled" data-id="' + nextId + '">Delete</button></td></tr>';
+    $(str).prependTo("#orders table > tbody");
 }

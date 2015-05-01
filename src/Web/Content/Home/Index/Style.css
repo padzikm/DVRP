@@ -2,7 +2,7 @@
     position: absolute;
     top: 0;
     left: 0;
-    right: 25%;
+    right: 35%;
     bottom: 0;
     background: #eee;
 }
@@ -10,20 +10,30 @@
 #panel {
     position: absolute;
     top: 0;
-    left: 75%;
+    left: 65%;
     right: 0;
     bottom: 0;
     background: #eee;
-    overflow: auto;
+    overflow-y: auto; 
 }
 
-#formId label {
-    position: absolute;
-    width: 25%;
+input {
+    display: block;
+    padding: 0; 
+    margin: 0; 
+    border: 0; 
+    width: 100%; 
+    border-radius: 0; 
+    line-height: 2;
+    text-align: center;
 }
 
-#formId input {
-    position: absolute;
-    left: 25%;
-    width: 65%;
+td {
+    margin: 0; 
+    padding: 1px;
+}
+
+td button {
+    display: block;
+    margin:auto;
 }
