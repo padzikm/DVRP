@@ -92,4 +92,24 @@ function setEvents() {
         var thisId = "#" + dataId;
         $(thisId).remove();
     });
+
+    $("#saveToFileBtn").click(function (e) {
+        e.preventDefault();
+        var firstId = findNotAddedOrderId();
+        var selector = "#" + firstId + " input";
+        $(selector).prop("disabled", true);
+        var json = serialize("formId");
+        $(selector).prop("disabled", false);
+        var data = JSON.stringify(json);
+        var blob = new Blob([data], { type: "application/json" });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.download = "dvrp.json";
+        a.href = url;
+        a.click();
+    });
+
+    $("#readFromFileBtn").click(function (e) {
+        e.preventDefault();
+    });
 }

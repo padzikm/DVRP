@@ -17,3 +17,22 @@ function findNotAddedOrderId() {
 function findInputOrderId(input) {
     return $(input).closest("tr").attr("id");
 }
+
+function serialize(formId) {
+    var o = {};
+    var selector = "#" + formId;
+    var a = $(selector).serializeArray();
+
+    $.each(a, function () {
+        if (o[this.name]) {
+            if (!o[this.name].push) {
+                o[this.name] = [o[this.name]];
+            }
+            o[this.name].push(this.value || '');
+        } else {
+            o[this.name] = this.value || '';
+        }
+    });
+
+    return o;
+}
