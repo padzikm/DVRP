@@ -17,6 +17,21 @@
     overflow-y: auto; 
 }
 
+table {
+    table-layout: fixed;
+    width: 100%;
+}
+
+#actions table {
+    width: 80%;
+    margin: 3%;
+}
+
+table caption {
+    font-weight: bold;
+    margin-bottom: 3%;
+}
+
 input {
     display: block;
     padding: 0; 

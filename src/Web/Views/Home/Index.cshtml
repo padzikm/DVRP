@@ -25,26 +25,26 @@
             <fieldset>
                 <legend>DVRP data:</legend>
                 <div id="depot">
-                    <table style="table-layout: fixed; width: 100%">
+                    <table>
                         <caption>Depot</caption>
                         <thead>
-                            <tr>
-                                <th style="width: 40%">Address</th>
-                                <th style="width: 10%">Truck count</th>
-                                <th style="width: 10%">Truck load</th>
-                                <th style="width: 10%">Open hour</th>
-                                <th style="width: 10%">Close hour</th>
-                                <th style="width: 10%"></th>
-                                <th style="width: 10%"></th>
-                            </tr>
+                        <tr>
+                            <th style="width: 40%">Address</th>
+                            <th style="width: 10%">Truck count</th>
+                            <th style="width: 10%">Truck load</th>
+                            <th style="width: 10%">Open hour</th>
+                            <th style="width: 10%">Close hour</th>
+                            <th style="width: 10%"></th>
+                            <th style="width: 10%"></th>
+                        </tr>
                         </thead>
                         <tbody>
                         <tr>
                             <td style="display: none">
-                                <input type="hidden" name="depot.coords.lat" />
+                                <input type="hidden" name="depot.coords.lat"/>
                             </td>
                             <td style="display: none">
-                                <input type="hidden" name="depot.coords.lng" />
+                                <input type="hidden" name="depot.coords.lng"/>
                             </td>
                             <td>
                                 <input id="depot.address" name="depot.address" type="text"/>
@@ -71,12 +71,26 @@
                         </tbody>
                     </table>
                 </div>
-                <button id="addOrderBtn">Add order</button>
-                <button id="computeBtn">Compute</button>
-                <button id="saveToFileBtn">Save to file</button>
-                <input type="file" id="files" name="files" value="Read from file" />
+                <div id="actions">
+                    <table>
+                        <tr>
+                            <td style="width: 20%">
+                                <button id="addOrderBtn">Add order</button>
+                            </td>
+                            <td style="width: 20%">
+                                <button id="computeBtn">Compute</button>
+                            </td>
+                            <td style="width: 20%">
+                                <button id="saveToFileBtn">Save to file</button>
+                            </td>
+                            <td style="width: 40%">
+                                <input type="file" id="files" name="files" value="Read from file" />
+                            </td>
+                        </tr>
+                    </table>
+                </div>
                 <div id="orders">
-                    <table style="table-layout: fixed; width: 100%">
+                    <table>
                         <caption>Orders</caption>
                         <thead>
                             <tr>
@@ -85,8 +99,8 @@
                                 <th style="width: 10%">Amount</th>
                                 <th style="width: 10%">Open hour</th>
                                 <th style="width: 10%">Close hour</th>
-                                <th style="width: 10%; align-content: center"></th>
-                                <th style="width: 10%; align-content: center"></th>
+                                <th style="width: 10%;"></th>
+                                <th style="width: 10%;"></th>
                             </tr>
                         </thead>
                         <tbody>

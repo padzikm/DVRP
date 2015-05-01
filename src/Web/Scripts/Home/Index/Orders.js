@@ -18,6 +18,7 @@ function createOrderMarker(latLng, address) {
     });
     google.maps.event.addListener(marker, 'rightclick', function (e) {
         removeOrderMarker(marker);
+        $("#" + marker.orderId).remove();
     });
     google.maps.event.addListener(marker, 'dragstart', function (e) {
         infowindow.close();
@@ -46,12 +47,10 @@ function createOrder(latLng, address, data) {
 }
 
 function removeOrderMarker(marker) {
-    var thisId = "#" + marker.orderId;
     var index = orderMarkers.indexOf(marker);
     orderMarkers.splice(index, 1);
     google.maps.event.clearInstanceListeners(marker);
     marker.setMap(null);
-    $(thisId).remove();
 }
 
 function addOrderHandler(latLng, address, data) {
