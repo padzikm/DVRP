@@ -1,6 +1,7 @@
 ﻿
 function setEvents() {
     $("#computeBtn").click(function (e) {
+        e.preventDefault();
         var firstId = findNotAddedOrderId();
         var selector = "#" + firstId + " input";
         $(selector).prop("disabled", true);
@@ -14,67 +15,56 @@ function setEvents() {
             success: function (data) { console.log(data); },
             error: function () { console.log("failed"); }
         });
-
-        e.preventDefault();
     });
 
-    $("#depot.address").blur(function (e) {
+    $("#depot\\.address").blur(function (e) {
         var address = $(this).val();
-        if (address === "") {
-            removeDepotMarker();
-            $("#showDepotBtn").prop("disabled", true);
-            return;
-        }
-        geocoding(address, createDepot);
+        geocoding(address, updateDepotMarker, removeDepotMarker);
     });
 
     $("#showDepotBtn").click(function (e) {
         e.preventDefault();
-        if (depotMarker != null)
+        if (depotMarker != null) {
             depotMarker.infoWindow.open(map, depotMarker);
+            map.panTo(depotMarker.getPosition());
+        }
     });
 
     $("#deleteDepotBtn").click(function (e) {
         e.preventDefault();
-        removeDepotMarker();
-        $("#depot input").val("");
-        $("#showDepotBtn").prop("disabled", true);
+        removeDepot();
     });
 
     $("#addOrderBtn").click(function (e) {
         e.preventDefault();
         var firstId = findNotAddedOrderId();
-        var selector = "#" + firstId;
-        var address = $(selector).find("input[name$='address']").val();
-        if (address === "")
-            return;
-        geocoding(address, addOrderHandler, { Id: firstId });
+        var selector = "#" + firstId + " [name$='address']";
+        var address = $(selector).val();
+        console.log(address);
+        geocoding(address, addOrderHandler, null, { id: firstId });
     });
 
-    $(document).on("blur", "[name^='orders['][name$='].address']", function (e) {
+    $(document).on("blur", "[id='orders'] [name$='.address']", function (e) {
         var firstId = findNotAddedOrderId();
         var thisId = findInputOrderId(this);
         if (firstId === thisId)
             return;
-        var thisSelector = "#" + thisId;
+
         var address = $(this).val();
-        var marker = findMarker(thisId);
-        if (marker != null) {
-            $(thisSelector).find("button[name='showOrderBtn']").prop("disabled", true);
-            removeOrderMarker(marker);
-        }
-        if (address === "") {
+
+        var failure = function (data) {
             var any = false;
-            $(thisSelector).find("input:not([type='hidden'])").each(function () {
+            var thisSelector = "#" + data.id;
+            $(thisSelector).find("input:not([type='hidden']):not([name$='.address'])").each(function () {
                 if ($(this).val() !== "")
                     any = true;
             });
-            if (!any) {
-                $(thisSelector).remove();
-                return;
-            }
+            if (any)
+                removeOrderMarker(data.id);
+            else
+                removeOrder(data.id);
         }
-        geocoding(address, createOrder, { Id: thisId });
+        geocoding(address, updateOrderMarker, failure, { id: thisId });
     });
 
     $(document).on("click", "button[name='showOrderBtn']", function (e) {
@@ -82,15 +72,25 @@ function setEvents() {
         var dataId = $(this).data("id");
         var marker = findMarker(dataId);
         marker.infoWindow.open(map, marker);
+        map.panTo(marker.getPosition());
     });
 
     $(document).on("click", "button[name='deleteOrderBtn']", function (e) {
         e.preventDefault();
-        var dataId = $(this).data("id");
-        var marker = findMarker(dataId);
-        removeOrderMarker(marker);
-        var thisId = "#" + dataId;
-        $(thisId).remove();
+        var id = $(this).data("id");
+        removeOrder(id);
+    });
+
+    $("#removeAllBtn").click(function (e) {
+        e.preventDefault();
+        removeDepot();
+        var firstId = findNotAddedOrderId();
+        var $obj = $("#orders tr");
+        $.each($obj, function (index, value) {
+            var id = $(value).attr("id");
+            if (id != null && id !== firstId)
+                removeOrder(id);
+        });
     });
 
     $("#saveToFileBtn").click(function (e) {
@@ -111,9 +111,10 @@ function setEvents() {
 
     $("#readFromFileBtn").click(function (e) {
         e.preventDefault();
+        $("#file").click();
     });
 
-    $("#files").change(function (evt) {
+    $("#file").change(function (evt) {
         var jsonObj = null;
         var files = evt.target.files;
         var f = files[0];

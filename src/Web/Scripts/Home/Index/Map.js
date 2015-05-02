@@ -11,10 +11,10 @@ function initializeMap() {
 
     google.maps.event.addListener(map, 'click', function (e) {
         var firstId = findNotAddedOrderId();
-        reverseGeocoding(e.latLng, addOrderHandler, { Id: firstId });
+        reverseGeocoding(e.latLng, addOrderHandler, null, { id: firstId });
     });
 
     google.maps.event.addListener(map, 'rightclick', function (e) {
-        reverseGeocoding(e.latLng, createDepot);
+        reverseGeocoding(e.latLng, updateDepotMarker, removeDepotMarker);
     });
 }

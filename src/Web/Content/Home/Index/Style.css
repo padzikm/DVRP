@@ -24,12 +24,16 @@ table {
 
 #actions table {
     width: 80%;
-    margin: 3%;
+    margin-top: 1%;
+}
+
+#actions table button {
+    width: 100%;
 }
 
 table caption {
     font-weight: bold;
-    margin-bottom: 3%;
+    margin: 3%;
 }
 
 input {
@@ -43,6 +47,14 @@ input {
     text-align: center;
 }
 
+input[type="file"] {
+    display: none;
+}
+
+th {
+    width: 10%;
+}
+
 td {
     margin: 0; 
     padding: 1px;
@@ -51,4 +63,8 @@ td {
 td button {
     display: block;
     margin:auto;
+}
+
+.no-display {
+    display: none;
 }

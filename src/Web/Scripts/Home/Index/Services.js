@@ -1,18 +1,28 @@
 ﻿
-function geocoding(address, func, data) {
+function geocoding(address, success, failure, data) {
     geocoder.geocode({ 'address': address }, function (results, status) {
+        console.log(results);
         if (status === google.maps.GeocoderStatus.OK) {
-            var latLng = results[0].geometry.location;
-            func(latLng, address, data);
+            if (results[0]) {
+                success(results[0].geometry.location, address, data);
+                return;
+            }
         }
+        if(failure != null)
+            failure(data);
+
     });
 }
 
-function reverseGeocoding(latLng, func, data) {
+function reverseGeocoding(latLng, success, failure, data) {
     geocoder.geocode({ 'latLng': latLng }, function (results, status) {
         if (status === google.maps.GeocoderStatus.OK) {
-            if (results[0])
-                func(latLng, results[0].formatted_address, data);
+            if (results[0]) {
+                success(latLng, results[0].formatted_address, data);
+                return;
+            }
         }
+        if(failure != null)
+            failure(data);
     });
 }

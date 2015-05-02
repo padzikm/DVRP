@@ -1,15 +1,4 @@
 ﻿
-function createDepot(latLng, address) {
-    removeDepotMarker();
-    createDepotMarker(latLng, address);
-    $("#depot\\.address").val(address);
-    var lat = latLng.lat();
-    var lng = latLng.lng();
-    $("[name='depot.coords.lat']").val(lat);
-    $("[name='depot.coords.lng']").val(lng);
-    $("#showDepotBtn").prop("disabled", false);
-}
-
 function createDepotMarker(latLng, address) {
     var infowindow = new google.maps.InfoWindow({
         content: address
@@ -25,6 +14,13 @@ function createDepotMarker(latLng, address) {
     google.maps.event.addListener(depotMarker, 'click', function (e) {
         $("#depot.trackCount").focus();
     });
+
+    $("#depot\\.address").val(address);
+    var lat = latLng.lat();
+    var lng = latLng.lng();
+    $("[name='depot.coords.lat']").val(lat);
+    $("[name='depot.coords.lng']").val(lng);
+    $("#showDepotBtn").prop("disabled", false);
 }
 
 function removeDepotMarker() {
@@ -33,6 +29,20 @@ function removeDepotMarker() {
         google.maps.event.clearInstanceListeners(depotMarker);
         depotMarker = null;
     }
+    $("[name='depot.coords.lat']").val("");
+    $("[name='depot.coords.lng']").val("");
+    $("#depot\\.address").val("");
+    $("#showDepotBtn").prop("disabled", true);
+}
+
+function updateDepotMarker(latLng, address) {
+    removeDepotMarker();
+    createDepotMarker(latLng, address);
+}
+
+function removeDepot() {
+    removeDepotMarker();
+    $("#depot input").val("");
 }
 
 function insertDepot(json) {
@@ -45,7 +55,7 @@ function insertDepot(json) {
     var closeHour = json["depot.closeHour"];
     var latLng = new google.maps.LatLng(lat, lng);
 
-    createDepot(latLng, address);
+    updateDepotMarker(latLng, address);
     $("#depot\\.truckCount").val(truckCount);
     $("#depot\\.truckLoad").val(truckLoad);
     $("#depot\\.openHour").val(openHour);

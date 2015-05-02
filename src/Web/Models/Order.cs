@@ -11,7 +11,5 @@
         public int Amount { get; set; }
 
         public int OpenHour { get; set; }
-
-        public int CloseHour { get; set; }
     }
 }

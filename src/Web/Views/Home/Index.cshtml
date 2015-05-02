@@ -24,27 +24,49 @@
         <form id="formId">
             <fieldset>
                 <legend>DVRP data:</legend>
+                <div id="actions">
+                    <table>
+                        <tr>
+                            <td>
+                                <button id="addOrderBtn">Add order</button>
+                            </td>
+                            <td>
+                                <button id="computeBtn">Compute</button>
+                            </td>
+                            <td>
+                                <button id="removeAllBtn">Remove all</button>
+                            </td>
+                            <td>
+                                <button id="saveToFileBtn">Save to file</button>
+                            </td>
+                            <td>
+                                <button id="readFromFileBtn">Read from file</button>
+                                <input id="file" name="file" type="file" />
+                            </td>
+                        </tr>
+                    </table>
+                </div>
                 <div id="depot">
                     <table>
                         <caption>Depot</caption>
                         <thead>
                         <tr>
                             <th style="width: 40%">Address</th>
-                            <th style="width: 10%">Truck count</th>
-                            <th style="width: 10%">Truck load</th>
-                            <th style="width: 10%">Open hour</th>
-                            <th style="width: 10%">Close hour</th>
-                            <th style="width: 10%"></th>
-                            <th style="width: 10%"></th>
+                            <th>Truck count</th>
+                            <th>Truck load</th>
+                            <th>Open hour</th>
+                            <th>Close hour</th>
+                            <th></th>
+                            <th></th>
                         </tr>
                         </thead>
                         <tbody>
                         <tr>
-                            <td style="display: none">
-                                <input type="hidden" name="depot.coords.lat"/>
+                            <td class="no-display">
+                                <input type="hidden" name="depot.coords.lat" />
                             </td>
-                            <td style="display: none">
-                                <input type="hidden" name="depot.coords.lng"/>
+                            <td class="no-display">
+                                <input type="hidden" name="depot.coords.lng" />
                             </td>
                             <td>
                                 <input id="depot.address" name="depot.address" type="text"/>
@@ -71,47 +93,28 @@
                         </tbody>
                     </table>
                 </div>
-                <div id="actions">
-                    <table>
-                        <tr>
-                            <td style="width: 20%">
-                                <button id="addOrderBtn">Add order</button>
-                            </td>
-                            <td style="width: 20%">
-                                <button id="computeBtn">Compute</button>
-                            </td>
-                            <td style="width: 20%">
-                                <button id="saveToFileBtn">Save to file</button>
-                            </td>
-                            <td style="width: 40%">
-                                <input type="file" id="files" name="files" value="Read from file" />
-                            </td>
-                        </tr>
-                    </table>
-                </div>
                 <div id="orders">
                     <table>
                         <caption>Orders</caption>
                         <thead>
                             <tr>
-                                <th style="width: 20%">Name</th>
+                                <th style="width: 30%">Name</th>
                                 <th style="width: 30%">Address</th>
-                                <th style="width: 10%">Amount</th>
-                                <th style="width: 10%">Open hour</th>
-                                <th style="width: 10%">Close hour</th>
-                                <th style="width: 10%;"></th>
-                                <th style="width: 10%;"></th>
+                                <th>Amount</th>
+                                <th>Open hour</th>
+                                <th></th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr id="0">
-                                <td style="display: none">
-                                    <input type="hidden" name="orders.Index" value="0"/>
+                                <td class="no-display">
+                                    <input type="hidden" name="orders.index" value="0" />
                                 </td>
-                                <td style="display: none">
+                                <td class="no-display">
                                     <input type="hidden" name="orders[0].coords.lat" />
                                 </td>
-                                <td style="display: none">
+                                <td class="no-display">
                                     <input type="hidden" name="orders[0].coords.lng" />
                                 </td>
                                 <td>
@@ -125,9 +128,6 @@
                                 </td>
                                 <td>
                                     <input id="orders[0].openHour" name="orders[0].openHour" type="text" />
-                                </td>
-                                <td>
-                                    <input id="orders[0].closeHour" name="orders[0].closeHour" type="text" />
                                 </td>
                                 <td>
                                     <button name="showOrderBtn" disabled="disabled" data-id="0">Show</button>
