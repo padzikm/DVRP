@@ -81,6 +81,12 @@ function addOrderHandler(latLng, address, data) {
     str += '<td><button name="showOrderBtn" disabled="disabled" data-id="' + nextId + '">Show</button></td>';
     str += '<td><button name="deleteOrderBtn" disabled="disabled" data-id="' + nextId + '">Delete</button></td></tr>';
     $(str).prependTo("#orders table > tbody");
+
+    var selector = "[id='orders[" + nextId + "].openHour']";
+    $(selector).timepicker({
+        minuteStep: 1,
+        showMeridian: false
+    });
 }
 
 function insertOrders(json) {

@@ -131,4 +131,9 @@ function setEvents() {
 
         reader.readAsText(f);
     });
+
+    $("[id='orders[0].openHour'], [id='depot.openHour'], [id='depot.closeHour']").timepicker({
+        minuteStep: 1,
+        showMeridian: false
+    });
 }
