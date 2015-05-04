@@ -22,12 +22,17 @@
     width: 100%;
 }
 
-.my-inputs #actions table {
+#timeOptions table {
     width: 80%;
     margin-top: 1%;
 }
 
-.my-inputs #actions table button {
+#actions table {
+    width: 80%;
+    margin-top: 3%;
+}
+
+#actions table button {
     width: 100%;
 }
 

@@ -24,127 +24,153 @@
 </head>
 <body>
     <div id="map"></div>
-    <div id="panel" class="my-inputs">
-        <form id="formId">
-            <fieldset>
-                <legend>DVRP data:</legend>
-                <div id="actions">
-                    <table>
-                        <tr>
-                            <td>
-                                <button id="addOrderBtn">Add order</button>
-                            </td>
-                            <td>
-                                <button id="computeBtn">Compute</button>
-                            </td>
-                            <td>
-                                <button id="removeAllBtn">Remove all</button>
-                            </td>
-                            <td>
-                                <button id="saveToFileBtn">Save to file</button>
-                            </td>
-                            <td>
-                                <button id="readFromFileBtn">Read from file</button>
-                                <input id="file" name="file" type="file" />
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-                <div id="depot">
-                    <table>
-                        <caption>Depot</caption>
-                        <thead>
-                            <tr>
-                                <th style="width: 40%">Address</th>
-                                <th>Truck count</th>
-                                <th>Truck load</th>
-                                <th>Open hour</th>
-                                <th>Close hour</th>
-                                <th></th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td class="no-display">
-                                    <input type="hidden" name="depot.coords.lat" />
-                                </td>
-                                <td class="no-display">
-                                    <input type="hidden" name="depot.coords.lng" />
-                                </td>
-                                <td>
-                                    <input id="depot.address" name="depot.address" type="text" />
-                                </td>
-                                <td>
-                                    <input id="depot.truckCount" name="depot.truckCount" type="text" />
-                                </td>
-                                <td>
-                                    <input id="depot.truckLoad" name="depot.truckLoad" type="text" />
-                                </td>
-                                <td>
-                                    <input id="depot.openHour" name="depot.openHour" type="text" />
-                                </td>
-                                <td>
-                                    <input id="depot.closeHour" name="depot.closeHour" type="text" />
-                                </td>
-                                <td>
-                                    <button id="showDepotBtn" disabled="disabled">Show</button>
-                                </td>
-                                <td>
-                                    <button id="deleteDepotBtn">Delete</button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div id="orders">
-                    <table>
-                        <caption>Orders</caption>
-                        <thead>
-                            <tr>
-                                <th style="width: 30%">Name</th>
-                                <th style="width: 30%">Address</th>
-                                <th>Amount</th>
-                                <th>Open hour</th>
-                                <th></th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr id="0">
-                                <td class="no-display">
-                                    <input type="hidden" name="orders.index" value="0" />
-                                </td>
-                                <td class="no-display">
-                                    <input type="hidden" name="orders[0].coords.lat" />
-                                </td>
-                                <td class="no-display">
-                                    <input type="hidden" name="orders[0].coords.lng" />
-                                </td>
-                                <td>
-                                    <input id="orders[0].name" name="orders[0].name" type="text" />
-                                </td>
-                                <td>
-                                    <input id="orders[0].address" name="orders[0].address" type="text" />
-                                </td>
-                                <td>
-                                    <input id="orders[0].amount" name="orders[0].amount" type="text" />
-                                </td>
-                                <td>
-                                    <input id="orders[0].openHour" name="orders[0].openHour" type="text" />
-                                </td>
-                                <td>
-                                    <button name="showOrderBtn" disabled="disabled" data-id="0">Show</button>
-                                </td>
-                                <td>
-                                    <button name="deleteOrderBtn" disabled="disabled" data-id="0">Delete</button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </fieldset>
-        </form>
-    </div>
+<div id="panel" class="my-inputs">
+    <form id="formId">
+        <fieldset>
+            <legend>DVRP data:</legend>
+            <div id="timeOptions">
+                <table>
+                    <tr>
+                        <th>
+                            Current time
+                        </th>
+                        <th>
+                            Time step
+                        </th>
+                        <th>
+                            Time step value
+                        </th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input id="currentTime" readonly="readonly"/>
+                        </td>
+                        <td>
+                            <input id="timeStep" type="range" min="1" max="60" step="1"/>
+                        </td>
+                        <td>
+                            <input id="timeStepVal" readonly="readonly"/>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div id="actions">
+                <table>
+                    <tr>
+                        <td>
+                            <button id="addOrderBtn">Add order</button>
+                        </td>
+                        <td>
+                            <button id="computeBtn">Compute</button>
+                        </td>
+                        <td>
+                            <button id="removeAllBtn">Remove all</button>
+                        </td>
+                        <td>
+                            <button id="saveToFileBtn">Save to file</button>
+                        </td>
+                        <td>
+                            <button id="readFromFileBtn">Read from file</button>
+                            <input id="file" name="file" type="file"/>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div id="depot">
+                <table>
+                    <caption>Depot</caption>
+                    <thead>
+                    <tr>
+                        <th style="width: 40%">Address</th>
+                        <th>Truck count</th>
+                        <th>Truck load</th>
+                        <th>Open hour</th>
+                        <th>Close hour</th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td class="no-display">
+                            <input type="hidden" name="depot.coords.lat"/>
+                        </td>
+                        <td class="no-display">
+                            <input type="hidden" name="depot.coords.lng"/>
+                        </td>
+                        <td>
+                            <input id="depot.address" name="depot.address" type="text"/>
+                        </td>
+                        <td>
+                            <input id="depot.truckCount" name="depot.truckCount" type="text"/>
+                        </td>
+                        <td>
+                            <input id="depot.truckLoad" name="depot.truckLoad" type="text"/>
+                        </td>
+                        <td>
+                            <input id="depot.openHour" name="depot.openHour" type="text"/>
+                        </td>
+                        <td>
+                            <input id="depot.closeHour" name="depot.closeHour" type="text"/>
+                        </td>
+                        <td>
+                            <button id="showDepotBtn" disabled="disabled">Show</button>
+                        </td>
+                        <td>
+                            <button id="deleteDepotBtn">Delete</button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div id="orders">
+                <table>
+                    <caption>Orders</caption>
+                    <thead>
+                    <tr>
+                        <th style="width: 30%">Name</th>
+                        <th style="width: 30%">Address</th>
+                        <th>Amount</th>
+                        <th>Open hour</th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr id="0">
+                        <td class="no-display">
+                            <input type="hidden" name="orders.index" value="0"/>
+                        </td>
+                        <td class="no-display">
+                            <input type="hidden" name="orders[0].coords.lat"/>
+                        </td>
+                        <td class="no-display">
+                            <input type="hidden" name="orders[0].coords.lng"/>
+                        </td>
+                        <td>
+                            <input id="orders[0].name" name="orders[0].name" type="text"/>
+                        </td>
+                        <td>
+                            <input id="orders[0].address" name="orders[0].address" type="text"/>
+                        </td>
+                        <td>
+                            <input id="orders[0].amount" name="orders[0].amount" type="text"/>
+                        </td>
+                        <td>
+                            <input id="orders[0].openHour" name="orders[0].openHour" type="text"/>
+                        </td>
+                        <td>
+                            <button name="showOrderBtn" disabled="disabled" data-id="0">Show</button>
+                        </td>
+                        <td>
+                            <button name="deleteOrderBtn" disabled="disabled" data-id="0">Delete</button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </fieldset>
+    </form>
+</div>
 </body>
 </html>

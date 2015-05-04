@@ -1,6 +1,6 @@
 ﻿
 function setEvents() {
-    $("#computeBtn").click(function (e) {
+    $("#computeBtn").click(function(e) {
         e.preventDefault();
         var firstId = findNotAddedOrderId();
         var selector = "#" + firstId + " input";
@@ -12,17 +12,17 @@ function setEvents() {
             url: "/Home/Compute",
             data: form,
             method: "POST",
-            success: function (data) { console.log(data); },
-            error: function () { console.log("failed"); }
+            success: function(data) { console.log(data); },
+            error: function() { console.log("failed"); }
         });
     });
 
-    $("#depot\\.address").blur(function (e) {
+    $("#depot\\.address").blur(function(e) {
         var address = $(this).val();
         geocoding(address, updateDepotMarker, removeDepotMarker);
     });
 
-    $("#showDepotBtn").click(function (e) {
+    $("#showDepotBtn").click(function(e) {
         e.preventDefault();
         if (depotMarker != null) {
             depotMarker.infoWindow.open(map, depotMarker);
@@ -30,12 +30,12 @@ function setEvents() {
         }
     });
 
-    $("#deleteDepotBtn").click(function (e) {
+    $("#deleteDepotBtn").click(function(e) {
         e.preventDefault();
         removeDepot();
     });
 
-    $("#addOrderBtn").click(function (e) {
+    $("#addOrderBtn").click(function(e) {
         e.preventDefault();
         var firstId = findNotAddedOrderId();
         var selector = "#" + firstId + " [name$='address']";
@@ -44,7 +44,7 @@ function setEvents() {
         geocoding(address, addOrderHandler, null, { id: firstId });
     });
 
-    $(document).on("blur", "[id='orders'] [name$='.address']", function (e) {
+    $(document).on("blur", "[id='orders'] [name$='.address']", function(e) {
         var firstId = findNotAddedOrderId();
         var thisId = findInputOrderId(this);
         if (firstId === thisId)
@@ -52,10 +52,10 @@ function setEvents() {
 
         var address = $(this).val();
 
-        var failure = function (data) {
+        var failure = function(data) {
             var any = false;
             var thisSelector = "#" + data.id;
-            $(thisSelector).find("input:not([type='hidden']):not([name$='.address'])").each(function () {
+            $(thisSelector).find("input:not([type='hidden']):not([name$='.address'])").each(function() {
                 if ($(this).val() !== "")
                     any = true;
             });
@@ -67,7 +67,7 @@ function setEvents() {
         geocoding(address, updateOrderMarker, failure, { id: thisId });
     });
 
-    $(document).on("click", "button[name='showOrderBtn']", function (e) {
+    $(document).on("click", "button[name='showOrderBtn']", function(e) {
         e.preventDefault();
         var dataId = $(this).data("id");
         var marker = findMarker(dataId);
@@ -75,25 +75,25 @@ function setEvents() {
         map.panTo(marker.getPosition());
     });
 
-    $(document).on("click", "button[name='deleteOrderBtn']", function (e) {
+    $(document).on("click", "button[name='deleteOrderBtn']", function(e) {
         e.preventDefault();
         var id = $(this).data("id");
         removeOrder(id);
     });
 
-    $("#removeAllBtn").click(function (e) {
+    $("#removeAllBtn").click(function(e) {
         e.preventDefault();
         removeDepot();
         var firstId = findNotAddedOrderId();
         var $obj = $("#orders tr");
-        $.each($obj, function (index, value) {
+        $.each($obj, function(index, value) {
             var id = $(value).attr("id");
             if (id != null && id !== firstId)
                 removeOrder(id);
         });
     });
 
-    $("#saveToFileBtn").click(function (e) {
+    $("#saveToFileBtn").click(function(e) {
         e.preventDefault();
         var firstId = findNotAddedOrderId();
         var selector = "#" + firstId + " input";
@@ -109,19 +109,19 @@ function setEvents() {
         a.click();
     });
 
-    $("#readFromFileBtn").click(function (e) {
+    $("#readFromFileBtn").click(function(e) {
         e.preventDefault();
         $("#file").click();
     });
 
-    $("#file").change(function (evt) {
+    $("#file").change(function(evt) {
         var jsonObj = null;
         var files = evt.target.files;
         var f = files[0];
         var reader = new FileReader();
 
-        reader.onload = (function (theFile) {
-            return function (e) {
+        reader.onload = (function(theFile) {
+            return function(e) {
                 jsonObj = JSON.parse(e.target.result);
 
                 insertDepot(jsonObj);
@@ -135,5 +135,11 @@ function setEvents() {
     $("[id='orders[0].openHour'], [id='depot.openHour'], [id='depot.closeHour']").timepicker({
         minuteStep: 1,
         showMeridian: false
+    });
+
+    $("#timeStep").on("input change", function(e) {
+        timeStep = parseInt($(this).val());
+        var text = "x " + timeStep;
+        $("#timeStepVal").val(text);
     });
 }
