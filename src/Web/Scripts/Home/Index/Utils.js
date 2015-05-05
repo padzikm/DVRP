@@ -27,7 +27,6 @@ function serialize(formId) {
 function serializeObj(obj) {
     var o = {};
     var a = obj.serializeArray();
-    //console.log(a);
     $.each(a, function () {
         if (o[this.name]) {
             if (!o[this.name].push) {
@@ -49,16 +48,12 @@ function sendFormAjax(formId, url, success, failure) {
 }
 
 function sendPostAjax(data, url, success, failure) {
-    //console.log("post");
-    //a = data;
-    //console.log(data);
     $.ajax({
         url: url,
         data: data,
         method: "POST",
         traditional: true,
         success: function (data) {
-            //console.log(data);
             if (success == null) console.log("success");
             else success(data);
         },

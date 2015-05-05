@@ -45,9 +45,7 @@ function sendOrders() {
     var jq = $();
     var min = currentMinute;
     var h = currentHour;
-    //console.log($("#orders tr:gt(1):not(.sent)"));
     $("#orders tr:gt(1):not(.sent)").each(function (index, val) {
-        //console.log(this);
         var $val = $(val);
         if ($val.find("[id$='address']").val() === "")
             return;
@@ -58,21 +56,13 @@ function sendOrders() {
         if ((hour > h) || (hour === h && minute > min))
             return;
         var inputs = $val.find("input");
-        //console.log(inputs);
-        //jq.extend(inputs);
         $.merge(jq, inputs);
-        //console.log(jq);
         $val.addClass("sent");
         $val.find("button[name^='delete']").prop("disabled", true);
     });
-    //var $jq = $(jq);
-    //console.log($jq.get());
     if (jq.length === 0)
         return;
-    //a = jq;
-    //console.log(jq);
     var obj = serializeObj(jq);
     jq.prop("disabled", true);
-    //console.log(obj);
     sendPostAjax(obj, "/Home/AddOrders");
 }
