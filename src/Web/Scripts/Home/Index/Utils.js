@@ -36,3 +36,22 @@ function serialize(formId) {
 
     return o;
 }
+
+function sendForm(formId, url, success, failure) {
+    var selector = "#" + formId;
+    var form = $(selector).serialize();
+    $.ajax({
+        url: url,
+        data: form,
+        method: "POST",
+        success: function (data) {
+            console.log(data);
+            if (success == null)console.log("success");
+            else success(data);
+        },
+        error: function () {
+            if (failure == null)console.log("failure");
+            else failure();
+        }
+    });
+}

@@ -71,18 +71,18 @@ function removeOrder(orderId) {
 function addOrderHandler(latLng, address, data) {
     createOrderMarker(latLng, address, data);
     ++nextId;
-    var str = '<tr id="' + nextId + '"><input type="hidden" name="orders.index" value="' + nextId + '" style="display: none;"/>';
-    str += '<td style="display: none"><input type="hidden" name="orders[' + nextId + '].coords.lat" value="0"/></td>';
-    str += '<td style="display: none"><input type="hidden" name="orders[' + nextId + '].coords.lng" value="0" /></td>';
+    var str = '<tr id="' + nextId + '"><td class="no-display"><input type="hidden" name="orders.index" value="' + nextId + '" style="display: none;"/></td>';
+    str += '<td class="no-display"><input type="hidden" name="orders[' + nextId + '].coords.lat" value="0"/></td>';
+    str += '<td class="no-display"><input type="hidden" name="orders[' + nextId + '].coords.lng" value="0" /></td>';
     str += '<td><input id="orders[' + nextId + '].name" name="orders[' + nextId + '].name" type="text" /></td>';
     str += '<td><input id="orders[' + nextId + '].address" name="orders[' + nextId + '].address" type="text"/></td>';
     str += '<td><input id="orders[' + nextId + '].amount" name="orders[' + nextId + '].amount" type="text"/></td>';
-    str += '<td><input id="orders[' + nextId + '].openHour" name="orders[' + nextId + '].openHour" type="text" /></td>';
+    str += '<td><input id="orders[' + nextId + '].openTime" name="orders[' + nextId + '].openTime" type="text" /></td>';
     str += '<td><button name="showOrderBtn" disabled="disabled" data-id="' + nextId + '">Show</button></td>';
     str += '<td><button name="deleteOrderBtn" disabled="disabled" data-id="' + nextId + '">Delete</button></td></tr>';
     $(str).prependTo("#orders table > tbody");
 
-    var selector = "[id='orders[" + nextId + "].openHour']";
+    var selector = "[id='orders[" + nextId + "].openTime']";
     $(selector).timepicker({
         minuteStep: 1,
         showMeridian: false
@@ -100,7 +100,7 @@ function insertOrders(json) {
             var address = json["orders[" + index + "].address"];
             var name = json["orders[" + index + "].name"];
             var amount = json["orders[" + index + "].amount"];
-            var openHour = json["orders[" + index + "].openHour"];
+            var openTime = json["orders[" + index + "].openTime"];
 
             if (address === "")
                 continue;
@@ -110,7 +110,7 @@ function insertOrders(json) {
 
             $(selector + ".name']").val(name);
             $(selector + ".amount']").val(amount);
-            $(selector + ".openHour']").val(openHour);
+            $(selector + ".openTime']").val(openTime);
 
             var latLng = new google.maps.LatLng(lat, lng);
 

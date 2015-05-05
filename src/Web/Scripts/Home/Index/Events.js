@@ -2,19 +2,13 @@
 function setEvents() {
     $("#computeBtn").click(function(e) {
         e.preventDefault();
-        var firstId = findNotAddedOrderId();
-        var selector = "#" + firstId + " input";
-        $(selector).prop("disabled", true);
-        var form = $("#formId").serialize();
-        $(selector).prop("disabled", false);
-
-        $.ajax({
-            url: "/Home/Compute",
-            data: form,
-            method: "POST",
-            success: function(data) { console.log(data); },
-            error: function() { console.log("failed"); }
-        });
+        if (!computing) {
+            var firstId = findNotAddedOrderId();
+            var selector = "#" + firstId + " input";
+            $(selector).prop("disabled", true);
+            sendForm("formId", "/Home/Compute");
+            $(selector).prop("disabled", false);
+        }
     });
 
     $("#depot\\.address").blur(function(e) {
@@ -132,7 +126,7 @@ function setEvents() {
         reader.readAsText(f);
     });
 
-    $("[id='orders[0].openHour'], [id='depot.openHour'], [id='depot.closeHour']").timepicker({
+    $("[id$='Time']").timepicker({
         minuteStep: 1,
         showMeridian: false
     });

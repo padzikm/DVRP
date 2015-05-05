@@ -32,7 +32,7 @@ function setTimeFunc() {
         if (currentMinute < 10)
             time += "0";
         time += currentMinute;
-        console.log(time);
+        //console.log(time);
         $("#currentTime").val(time);
     }, timeout*1000);
 }

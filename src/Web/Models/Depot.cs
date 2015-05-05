@@ -10,8 +10,8 @@
 
         public int TruckLoad { get; set; }
 
-        public int OpenHour { get; set; }
+        public string OpenTime { get; set; }
 
-        public int CloseHour { get; set; }
+        public string CloseTime { get; set; }
     }
 }

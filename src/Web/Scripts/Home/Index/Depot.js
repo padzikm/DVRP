@@ -51,13 +51,13 @@ function insertDepot(json) {
     var address = json["depot.address"];
     var truckCount = json["depot.truckCount"];
     var truckLoad = json["depot.truckLoad"];
-    var openHour = json["depot.openHour"];
-    var closeHour = json["depot.closeHour"];
+    var openTime = json["depot.openTime"];
+    var closeTime = json["depot.closeTime"];
     var latLng = new google.maps.LatLng(lat, lng);
 
     updateDepotMarker(latLng, address);
     $("#depot\\.truckCount").val(truckCount);
     $("#depot\\.truckLoad").val(truckLoad);
-    $("#depot\\.openHour").val(openHour);
-    $("#depot\\.closeHour").val(closeHour);
+    $("#depot\\.openTime").val(openTime);
+    $("#depot\\.closeTime").val(closeTime);
 }
