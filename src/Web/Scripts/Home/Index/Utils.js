@@ -19,10 +19,15 @@ function findInputOrderId(input) {
 }
 
 function serialize(formId) {
-    var o = {};
     var selector = "#" + formId;
-    var a = $(selector).serializeArray();
+    var obj = $(selector);
+    return serializeObj(obj);
+}
 
+function serializeObj(obj) {
+    var o = {};
+    var a = obj.serializeArray();
+    //console.log(a);
     $.each(a, function () {
         if (o[this.name]) {
             if (!o[this.name].push) {
@@ -37,20 +42,28 @@ function serialize(formId) {
     return o;
 }
 
-function sendForm(formId, url, success, failure) {
+function sendFormAjax(formId, url, success, failure) {
     var selector = "#" + formId;
-    var form = $(selector).serialize();
+    var formData = $(selector).serialize();
+    sendPostAjax(formData, url, success, failure);
+}
+
+function sendPostAjax(data, url, success, failure) {
+    //console.log("post");
+    //a = data;
+    //console.log(data);
     $.ajax({
         url: url,
-        data: form,
+        data: data,
         method: "POST",
+        traditional: true,
         success: function (data) {
-            console.log(data);
-            if (success == null)console.log("success");
+            //console.log(data);
+            if (success == null) console.log("success");
             else success(data);
         },
         error: function () {
-            if (failure == null)console.log("failure");
+            if (failure == null) console.log("failure");
             else failure();
         }
     });

@@ -16,5 +16,17 @@ namespace Web.Controllers
         {
             return Json("ok");
         }
+
+        [HttpPost]
+        public ActionResult AddOrders(IEnumerable<Order> orders)
+        {
+            return Json("ok");
+        }
+
+        [HttpPost]
+        public ActionResult AbortComputation()
+        {
+            return Json("ok");
+        }
     }
 }

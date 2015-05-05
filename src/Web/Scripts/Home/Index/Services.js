@@ -1,7 +1,6 @@
 ﻿
 function geocoding(address, success, failure, data) {
     geocoder.geocode({ 'address': address }, function (results, status) {
-        console.log(results);
         if (status === google.maps.GeocoderStatus.OK) {
             if (results[0]) {
                 success(results[0].geometry.location, address, data);

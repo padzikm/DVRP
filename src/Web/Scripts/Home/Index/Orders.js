@@ -1,15 +1,11 @@
 ﻿
 function createOrderMarker(latLng, address, data) {
-    var infowindow = new google.maps.InfoWindow({
-        content: address
-    });
     var marker = new google.maps.Marker({
         position: latLng,
         map: map,
         title: 'Order',
         icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png',
         draggable: true,
-        infoWindow: infowindow,
         orderId : data.id
     });
 
@@ -22,7 +18,7 @@ function createOrderMarker(latLng, address, data) {
         $("#" + marker.orderId).remove();
     });
     google.maps.event.addListener(marker, 'dragstart', function (e) {
-        infowindow.close();
+        orderInfoWindow.close();
     });
     google.maps.event.addListener(marker, 'dragend', function (e) {
         reverseGeocoding(e.latLng, function (latLng, address) {
@@ -38,7 +34,7 @@ function createOrderMarker(latLng, address, data) {
     $(thisId).find("input[name$='address']").val(address);
     $(thisId).find("input[type='hidden'][name$='lat']").val(lat);
     $(thisId).find("input[type='hidden'][name$='lng']").val(lng);
-    $(thisId).find("button").prop("disabled", false);
+    $(thisId).find("button[name^='show']").prop("disabled", false);
 }
 
 function removeOrderMarker(orderId) {
@@ -69,7 +65,13 @@ function removeOrder(orderId) {
 }
 
 function addOrderHandler(latLng, address, data) {
-    createOrderMarker(latLng, address, data);
+    var marker = findMarker(data.id);
+    if(marker == null)
+        createOrderMarker(latLng, address, data);
+    else if (data.force)
+        updateOrderMarker(latLng, address, data);
+    var thisId = "#" + data.id;
+    $(thisId).find("button").prop("disabled", false);
     ++nextId;
     var str = '<tr id="' + nextId + '"><td class="no-display"><input type="hidden" name="orders.index" value="' + nextId + '" style="display: none;"/></td>';
     str += '<td class="no-display"><input type="hidden" name="orders[' + nextId + '].coords.lat" value="0"/></td>';
@@ -114,7 +116,11 @@ function insertOrders(json) {
 
             var latLng = new google.maps.LatLng(lat, lng);
 
-            addOrderHandler(latLng, address, { id: firstId });
+            addOrderHandler(latLng, address, { id: firstId, force: true });
         }
     }
+}
+
+function unlockOrders() {
+    $("#orders tr.sent").find("input, button").prop("disabled", false);
 }

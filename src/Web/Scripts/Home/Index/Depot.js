@@ -1,14 +1,12 @@
 ﻿
 function createDepotMarker(latLng, address) {
-    var infowindow = new google.maps.InfoWindow({
-        content: address
-    });
+    depotInfoWindow.setContent(address);
+
     depotMarker = new google.maps.Marker({
         position: latLng,
         map: map,
         title: 'Depot',
         icon: 'http://maps.google.com/mapfiles/ms/icons/purple-dot.png',
-        infoWindow: infowindow
     });
 
     google.maps.event.addListener(depotMarker, 'click', function (e) {
@@ -53,6 +51,10 @@ function insertDepot(json) {
     var truckLoad = json["depot.truckLoad"];
     var openTime = json["depot.openTime"];
     var closeTime = json["depot.closeTime"];
+
+    if (address === "")
+        return;
+
     var latLng = new google.maps.LatLng(lat, lng);
 
     updateDepotMarker(latLng, address);
@@ -60,4 +62,8 @@ function insertDepot(json) {
     $("#depot\\.truckLoad").val(truckLoad);
     $("#depot\\.openTime").val(openTime);
     $("#depot\\.closeTime").val(closeTime);
+}
+
+function unlockDepot() {
+    $("#depot").find("input, button").prop("disabled", false);
 }

@@ -2,12 +2,45 @@
 function setEvents() {
     $("#computeBtn").click(function(e) {
         e.preventDefault();
-        if (!computing) {
+        if (!computing && isComputeReady) {
+            isComputeReady = false;
             var firstId = findNotAddedOrderId();
             var selector = "#" + firstId + " input";
             $(selector).prop("disabled", true);
-            sendForm("formId", "/Home/Compute");
+            var data = $("#formId").serialize();
+            $("#depot").find("input, button[id='deleteDepotBtn']").prop("disabled", true);
+            $("#orders tr:gt(1)").addClass("sent");
+            $("#orders tr:gt(1)").find("input, button[name^='delete']").prop("disabled", true);
+            $("#computeBtn").text("Abort");
+            $("#removeAllBtn").prop("disabled", true);
+            $("#saveToFileBtn").prop("disabled", true);
+            $("#readFromFileBtn").prop("disabled", true);
             $(selector).prop("disabled", false);
+            sendPostAjax(data, "/Home/Compute", function (dat) {
+                console.log("success");
+                computing = true;
+            }, function() {
+                unlockDepot();
+                unlockOrders();
+                $("#computeBtn").text("Compute");
+                $("#removeAllBtn").prop("disabled", false);
+                $("#saveToFileBtn").prop("disabled", false);
+                $("#readFromFileBtn").prop("disabled", false);
+                isComputeReady = true;
+            });
+        }
+        else if(computing) {
+            computing = false;
+            func = function() {
+                unlockDepot();
+                unlockOrders();
+                $("#computeBtn").text("Compute");
+                $("#removeAllBtn").prop("disabled", false);
+                $("#saveToFileBtn").prop("disabled", false);
+                $("#readFromFileBtn").prop("disabled", false);
+                isComputeReady = true;
+            }
+            sendPostAjax(null, "/Home/AbortComputation", func, func);
         }
     });
 
@@ -19,7 +52,7 @@ function setEvents() {
     $("#showDepotBtn").click(function(e) {
         e.preventDefault();
         if (depotMarker != null) {
-            depotMarker.infoWindow.open(map, depotMarker);
+            depotInfoWindow.open(map, depotMarker);
             map.panTo(depotMarker.getPosition());
         }
     });
@@ -34,15 +67,12 @@ function setEvents() {
         var firstId = findNotAddedOrderId();
         var selector = "#" + firstId + " [name$='address']";
         var address = $(selector).val();
-        console.log(address);
+        
         geocoding(address, addOrderHandler, null, { id: firstId });
     });
 
     $(document).on("blur", "[id='orders'] [name$='.address']", function(e) {
-        var firstId = findNotAddedOrderId();
         var thisId = findInputOrderId(this);
-        if (firstId === thisId)
-            return;
 
         var address = $(this).val();
 
@@ -65,7 +95,10 @@ function setEvents() {
         e.preventDefault();
         var dataId = $(this).data("id");
         var marker = findMarker(dataId);
-        marker.infoWindow.open(map, marker);
+        var selector = "[id='orders[" + dataId + "].address']";
+        var address = $(selector).val();
+        orderInfoWindow.setContent(address);
+        orderInfoWindow.open(map, marker);
         map.panTo(marker.getPosition());
     });
 
@@ -132,8 +165,12 @@ function setEvents() {
     });
 
     $("#timeStep").on("input change", function(e) {
-        timeStep = parseInt($(this).val());
-        var text = "x " + timeStep;
+        var val = $(this).val();
+        var text = "x " + val;
         $("#timeStepVal").val(text);
+    });
+
+    $("#timeStep").change(function (e) {
+        timeStep = parseInt($(this).val());
     });
 }

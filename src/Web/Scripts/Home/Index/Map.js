@@ -11,7 +11,7 @@ function initializeMap() {
 
     google.maps.event.addListener(map, 'click', function (e) {
         var firstId = findNotAddedOrderId();
-        reverseGeocoding(e.latLng, addOrderHandler, null, { id: firstId });
+        reverseGeocoding(e.latLng, updateOrderMarker, null, { id: firstId });
     });
 
     google.maps.event.addListener(map, 'rightclick', function (e) {
