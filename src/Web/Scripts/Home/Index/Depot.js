@@ -67,12 +67,27 @@ function insertDepot(json) {
 
 function validateDepot() {
     var address = $("[id='depot.address']").val();
-    var openTime = $("[id='depot.openTime']").val();
-    var closeTime = $("[id='depot.closeTime']").val();
     var truckCount = $("[id='depot.truckCount']").val();
     var truckCountVal = parseInt(truckCount);
     var truckLoad = $("[id='depot.truckLoad']").val();
     var truckLoadVal = parseInt(truckLoad);
 
-    return address !== "" && openTime !== "" && closeTime !== "" && !isNaN(truckCountVal) && truckCountVal > 0 && !isNaN(truckLoadVal) && truckLoadVal > 0;
+    return validateDepotTime() && address !== "" && !isNaN(truckCountVal) && truckCountVal > 0 && !isNaN(truckLoadVal) && truckLoadVal > 0;
+}
+
+function validateDepotTime() {
+    var depotOpenTime = $("[id='depot.openTime']").val();
+    var separator = depotOpenTime.indexOf(":");
+    var depotOpenHour = parseInt(depotOpenTime.substring(0, separator));
+    var depotOpenMinute = parseInt(depotOpenTime.substring(separator + 1));
+
+    var depotCloseTime = $("[id='depot.closeTime']").val();
+    separator = depotCloseTime.indexOf(":");
+    var depotCloseHour = parseInt(depotCloseTime.substring(0, separator));
+    var depotCloseMinute = parseInt(depotCloseTime.substring(separator + 1));
+
+    if ((depotOpenHour > depotCloseHour) || (depotOpenHour === depotCloseHour && depotOpenMinute > depotCloseMinute))
+        return false;
+
+    return true;
 }

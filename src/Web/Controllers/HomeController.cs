@@ -12,7 +12,7 @@ namespace Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult Compute(Depot depot, IEnumerable<Order> orders)
+        public ActionResult Compute(Depot depot)
         {
             return Json("ok");
         }

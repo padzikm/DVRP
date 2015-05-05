@@ -8,6 +8,7 @@ function startComputing() {
     var func = function() {
         $("#actions button").prop("disabled", false);
         lock();
+        setClock();
         computing = true;
     }
     sendDepot(function () {
@@ -22,6 +23,14 @@ function abortComputing() {
     }
     computing = false;
     sendPostAjax(null, "/Home/AbortComputation", func, func);
+}
+
+function setClock() {
+    var time = $("[id='depot.openTime']").val();
+    $("#currentTime").val(time);
+    var separator = time.indexOf(":");
+    currentHour = parseInt(time.substring(0, separator));
+    currentMinute = parseInt(time.substring(separator + 1));
 }
 
 function lock() {
@@ -74,14 +83,18 @@ function sendDepot(success, failure) {
 
 function sendOrders(success, failure, empty) {
     var jq = $();
-    var min = currentMinute;
-    var h = currentHour;
+    var currentMin = currentMinute;
+    var currentH = currentHour;
     $("#orders tr:gt(1):not(.sent, .err)").each(function (index, val) {
         var $val = $(val);
-        if ($val.find("[id$='address']").val() === "")
-            return;
         var orderId = $val.attr("id");
-        if (!validateOrder(orderId, h, min)) {
+        var openTime = $val.find("[id$='openTime']").val();
+        var separator = openTime.indexOf(":");
+        var hour = parseInt(openTime.substring(0, separator));
+        var minute = parseInt(openTime.substring(separator + 1));
+        if ((currentH < hour) || (currentH === hour && minute > currentMin))
+            return;
+        if (!validateOrder(orderId)) {
             $("#" + orderId).addClass("err");
             return;
         }

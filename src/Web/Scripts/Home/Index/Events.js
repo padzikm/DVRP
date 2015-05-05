@@ -54,10 +54,8 @@ function setEvents() {
 
     $(document).on("blur", "#orders .err input", function(e) {
         var id = findInputOrderId(this);
-        if (validateOrder(id, currentHour, currentMinute)) {
-            console.log("zdjac");
+        if (validateOrder(id))
             $("#" + id).removeClass("err");
-        }
     });
 
     $(document).on("click", "button[name='showOrderBtn']", function(e) {

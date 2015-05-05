@@ -122,7 +122,7 @@ function insertOrders(json) {
     }
 }
 
-function validateOrder(orderId, currentHour, currentMinute) {
+function validateOrder(orderId) {
     var selector = "[id='orders[" + orderId + "]";
     var address = $(selector + ".address']").val();
     var amount = $(selector + ".amount']").val();
@@ -138,20 +138,17 @@ function validateOrder(orderId, currentHour, currentMinute) {
     var hour = parseInt(openTime.substring(0, separator));
     var minute = parseInt(openTime.substring(separator + 1));
 
-    var timeValidation = validateOrderTime(currentHour, currentMinute, hour, minute);
+    var timeValidation = validateOrderTime(hour, minute);
 
     return timeValidation;
 }
 
-function validateOrderTime(currentHour, currentMinute, orderHour, orderMinute) {
-    if ((currentHour < orderHour) || (currentHour === orderHour && orderMinute > currentMinute))
-        return false;
-
+function validateOrderTime(orderHour, orderMinute) {
     var depotOpenTime = $("[id='depot.openTime']").val();
     var separator = depotOpenTime.indexOf(":");
     var depotOpenHour = parseInt(depotOpenTime.substring(0, separator));
     var depotOpenMinute = parseInt(depotOpenTime.substring(separator + 1));
-    
+    console.log("raz");
     if ((depotOpenHour > orderHour) || (depotOpenHour === orderHour && orderMinute < depotOpenMinute))
         return false;
 
@@ -159,9 +156,14 @@ function validateOrderTime(currentHour, currentMinute, orderHour, orderMinute) {
     separator = depotCloseTime.indexOf(":");
     var depotCloseHour = parseInt(depotCloseTime.substring(0, separator));
     var depotCloseMinute = parseInt(depotCloseTime.substring(separator + 1));
-    
+    console.log("dwa");
     if ((depotCloseHour < orderHour) || (depotCloseHour === orderHour && orderMinute > depotCloseMinute))
         return false;
 
-    return true;
+    var totalMinutesDepot = (depotCloseHour - depotOpenHour) * 60 + (depotCloseMinute - depotOpenMinute);
+    var totalMinutesOrder = (orderHour - depotOpenHour) * 60 + (orderMinute - depotOpenMinute);
+
+    var ratio = totalMinutesOrder / totalMinutesDepot;
+    
+    return ratio <= orderTimeStopRatio;
 }

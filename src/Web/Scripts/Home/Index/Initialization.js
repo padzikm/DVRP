@@ -23,6 +23,8 @@ function setTimeOptions() {
 
 function setTimeFunc() {
     setInterval(function () {
+        if (!computing)
+            return;
         currentMinute += timeStep;
         if (currentMinute >= 60) {
             ++currentHour;
@@ -35,8 +37,6 @@ function setTimeFunc() {
             time += "0";
         time += currentMinute;
         $("#currentTime").val(time);
-
-        if (computing)
-            sendOrders();
-    }, timeout*1000);
+        sendOrders();
+    }, timeout * 1000);
 }
