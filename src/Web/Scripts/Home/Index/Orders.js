@@ -6,16 +6,17 @@ function createOrderMarker(latLng, address, data) {
         title: 'Order',
         icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png',
         draggable: true,
-        orderId : data.id
+        orderId: data.id
     });
 
     google.maps.event.addListener(marker, 'click', function (e) {
-        var thisId = "#" + marker.orderId;
-        $(thisId).find("input[name$='name']").focus();
+        showOrderInfoWindow(marker.orderId);
+        var selector = "#" + marker.orderId + " [id$='name']";
+        $(selector).focus();
     });
     google.maps.event.addListener(marker, 'rightclick', function (e) {
-        removeOrderMarker(marker.orderId);
-        $("#" + marker.orderId).remove();
+        if (!computing)
+            removeOrder(marker.orderId);
     });
     google.maps.event.addListener(marker, 'dragstart', function (e) {
         orderInfoWindow.close();
@@ -66,7 +67,7 @@ function removeOrder(orderId) {
 
 function addOrderHandler(latLng, address, data) {
     var marker = findMarker(data.id);
-    if(marker == null)
+    if (marker == null)
         createOrderMarker(latLng, address, data);
     else if (data.force)
         updateOrderMarker(latLng, address, data);
@@ -93,7 +94,7 @@ function addOrderHandler(latLng, address, data) {
 
 function insertOrders(json) {
     var ordersIndex = json["orders.index"];
-    
+
     for (var key in ordersIndex) {
         if (ordersIndex.hasOwnProperty(key)) {
             var index = ordersIndex[key];
@@ -121,6 +122,46 @@ function insertOrders(json) {
     }
 }
 
-function unlockOrders() {
-    $("#orders tr.sent").find("input, button").prop("disabled", false);
+function validateOrder(orderId, currentHour, currentMinute) {
+    var selector = "[id='orders[" + orderId + "]";
+    var address = $(selector + ".address']").val();
+    var amount = $(selector + ".amount']").val();
+    var amountVal = parseInt(amount);
+    var openTime = $(selector + ".openTime']").val();
+
+    var inputsValidation = address !== "" && !isNaN(amountVal) && amountVal > 0 && openTime !== "";
+
+    if (!inputsValidation)
+        return false;
+
+    var separator = openTime.indexOf(":");
+    var hour = parseInt(openTime.substring(0, separator));
+    var minute = parseInt(openTime.substring(separator + 1));
+
+    var timeValidation = validateOrderTime(currentHour, currentMinute, hour, minute);
+
+    return timeValidation;
+}
+
+function validateOrderTime(currentHour, currentMinute, orderHour, orderMinute) {
+    if ((currentHour < orderHour) || (currentHour === orderHour && orderMinute > currentMinute))
+        return false;
+
+    var depotOpenTime = $("[id='depot.openTime']").val();
+    var separator = depotOpenTime.indexOf(":");
+    var depotOpenHour = parseInt(depotOpenTime.substring(0, separator));
+    var depotOpenMinute = parseInt(depotOpenTime.substring(separator + 1));
+    
+    if ((depotOpenHour > orderHour) || (depotOpenHour === orderHour && orderMinute < depotOpenMinute))
+        return false;
+
+    var depotCloseTime = $("[id='depot.closeTime']").val();
+    separator = depotCloseTime.indexOf(":");
+    var depotCloseHour = parseInt(depotCloseTime.substring(0, separator));
+    var depotCloseMinute = parseInt(depotCloseTime.substring(separator + 1));
+    
+    if ((depotCloseHour < orderHour) || (depotCloseHour === orderHour && orderMinute > depotCloseMinute))
+        return false;
+
+    return true;
 }

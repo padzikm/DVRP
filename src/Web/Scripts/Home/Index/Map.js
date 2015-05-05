@@ -15,6 +15,23 @@ function initializeMap() {
     });
 
     google.maps.event.addListener(map, 'rightclick', function (e) {
-        reverseGeocoding(e.latLng, updateDepotMarker, removeDepotMarker);
+        if(!computing)
+            reverseGeocoding(e.latLng, updateDepotMarker, removeDepotMarker);
     });
+}
+
+function showDepotInfoWindow() {
+    if (depotMarker != null) {
+        depotInfoWindow.open(map, depotMarker);
+        map.panTo(depotMarker.getPosition());
+    }
+}
+
+function showOrderInfoWindow(orderId) {
+    var marker = findMarker(orderId);
+    var selector = "[id='orders[" + orderId + "].address']";
+    var address = $(selector).val();
+    orderInfoWindow.setContent(address);
+    orderInfoWindow.open(map, marker);
+    map.panTo(marker.getPosition());
 }

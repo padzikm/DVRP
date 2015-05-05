@@ -10,6 +10,7 @@ function createDepotMarker(latLng, address) {
     });
 
     google.maps.event.addListener(depotMarker, 'click', function (e) {
+        showDepotInfoWindow();
         $("#depot.trackCount").focus();
     });
 
@@ -64,6 +65,14 @@ function insertDepot(json) {
     $("#depot\\.closeTime").val(closeTime);
 }
 
-function unlockDepot() {
-    $("#depot").find("input, button").prop("disabled", false);
+function validateDepot() {
+    var address = $("[id='depot.address']").val();
+    var openTime = $("[id='depot.openTime']").val();
+    var closeTime = $("[id='depot.closeTime']").val();
+    var truckCount = $("[id='depot.truckCount']").val();
+    var truckCountVal = parseInt(truckCount);
+    var truckLoad = $("[id='depot.truckLoad']").val();
+    var truckLoadVal = parseInt(truckLoad);
+
+    return address !== "" && openTime !== "" && closeTime !== "" && !isNaN(truckCountVal) && truckCountVal > 0 && !isNaN(truckLoadVal) && truckLoadVal > 0;
 }
