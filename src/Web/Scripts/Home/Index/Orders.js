@@ -148,7 +148,6 @@ function validateOrderTime(orderHour, orderMinute) {
     var separator = depotOpenTime.indexOf(":");
     var depotOpenHour = parseInt(depotOpenTime.substring(0, separator));
     var depotOpenMinute = parseInt(depotOpenTime.substring(separator + 1));
-    console.log("raz");
     if ((depotOpenHour > orderHour) || (depotOpenHour === orderHour && orderMinute < depotOpenMinute))
         return false;
 
@@ -156,7 +155,6 @@ function validateOrderTime(orderHour, orderMinute) {
     separator = depotCloseTime.indexOf(":");
     var depotCloseHour = parseInt(depotCloseTime.substring(0, separator));
     var depotCloseMinute = parseInt(depotCloseTime.substring(separator + 1));
-    console.log("dwa");
     if ((depotCloseHour < orderHour) || (depotCloseHour === orderHour && orderMinute > depotCloseMinute))
         return false;
 
